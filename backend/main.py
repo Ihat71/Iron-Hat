@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from backend.core.logging import setup_logging
+from backend.core.logging import setup_logger
 from backend.core.config import config
 
 """ 
@@ -15,7 +15,7 @@ User authentication
 Workout logging
 Exercise database
 Workout history
-PR tracking
+PR tracking 
 Program creation
 Progress analytics
 Challenges
@@ -24,14 +24,19 @@ achievements
 Good to have:
 
 Notifications
+advanced analytics
+
+----------------------
+
+superflous but should still do:
+
 Friend system
 groups and communities
-advanced analytics
 social poking features
 """
-setup_logger()
+setup_logger() #in other files write 'logger = get_logger(__name__)'
 
-app = FastAPI()
+app = FastAPI(title="Iron-Hat's API")
 
 @app.get("/")
 def root():
