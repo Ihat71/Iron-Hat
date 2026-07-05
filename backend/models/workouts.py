@@ -9,8 +9,8 @@ class Workouts(Base):
     __tablename__ = "workouts"
 
     id: Mapped[int] = mapped_column(primary_key = True)
-    user_id: Mapped[int] = mapped_column(
-        ForeignKey("users.user_id")
+    program_id: Mapped[int] = mapped_column(
+        ForeignKey("program_templates.id")
     )
     day_number: Mapped[int] = mapped_column(Integer)
     workout_type: Mapped[str] = mapped_column(String(50))
