@@ -1,8 +1,8 @@
-"""new and improved schema/model
+"""new db
 
-Revision ID: c84d9afe30d7
+Revision ID: 6018d9ea072a
 Revises: 
-Create Date: 2026-07-04 16:37:01.345657
+Create Date: 2026-07-07 13:48:19.357278
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = 'c84d9afe30d7'
+revision: str = '6018d9ea072a'
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -30,10 +30,12 @@ def upgrade() -> None:
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('full_name', sa.String(length=100), nullable=False),
     sa.Column('username', sa.String(length=50), nullable=False),
+    sa.Column('email', sa.String(length=50), nullable=False),
     sa.Column('hashed_password', sa.String(length=255), nullable=False),
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.PrimaryKeyConstraint('user_id')
     )
+    op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=True)
     op.create_index(op.f('ix_users_username'), 'users', ['username'], unique=True)
     op.create_table('personal_records',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -48,13 +50,21 @@ def upgrade() -> None:
     sa.ForeignKeyConstraint(['user_id'], ['users.user_id'], ),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('workouts',
+    op.create_table('program_templates',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('program_name', sa.String(length=100), nullable=False),
+    sa.Column('program_description', postgresql.JSONB(astext_type=sa.Text()), nullable=False),
+    sa.ForeignKeyConstraint(['user_id'], ['users.user_id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('workouts',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('program_id', sa.Integer(), nullable=False),
     sa.Column('day_number', sa.Integer(), nullable=False),
     sa.Column('workout_type', sa.String(length=50), nullable=False),
     sa.Column('inserted_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
-    sa.ForeignKeyConstraint(['user_id'], ['users.user_id'], ),
+    sa.ForeignKeyConstraint(['program_id'], ['program_templates.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('exercise_history',
@@ -87,8 +97,10 @@ def downgrade() -> None:
     op.drop_table('workout_exercises')
     op.drop_table('exercise_history')
     op.drop_table('workouts')
+    op.drop_table('program_templates')
     op.drop_table('personal_records')
     op.drop_index(op.f('ix_users_username'), table_name='users')
+    op.drop_index(op.f('ix_users_email'), table_name='users')
     op.drop_table('users')
     op.drop_table('exercises')
     # ### end Alembic commands ###

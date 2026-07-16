@@ -1,27 +1,16 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from pydantic import EmailStr
-from backend.models.user import User
-from backend.schemas.user import UserCreate, UserUpdate
+from models.user import User
+from schemas.user import UserCreate, UserUpdate
 
-def create_user(db: Session, user_data: UserCreate) -> User:
-    
-    user = User(
-        full_name=user_data.full_name,
-        username=user_data.username,
-        email=user_data.email,
-        hashed_password=user_data.password
-    )
+def create_user(db: Session, user: User) -> User:
     
     db.add(user)
     db.commit()
     db.refresh(user)
 
     return user
-
-def get_users(db: Session) -> list[User]:
-    stmt = select(User)
-    return db.execute(stmt).scalars().all()
 
 def get_user_by_email(db: Session, user_email: EmailStr) -> User | None:
 

@@ -22,13 +22,13 @@ class PersonalRecordRead(BaseModel):
     id: int
     user_id: int
     exercise_id: int
-    pr_type: str
+    pr_type: PRType
     weight: float
-    sets: int | None=None
-    reps: int | None=None
+    sets: int 
+    reps: int 
 
 class PersonalRecordUpdate(BaseModel):
-    pr_type: str | None = None
+    pr_type: PRType 
     weight: float | None = None
     sets: int | None = None
     reps: int | None = None

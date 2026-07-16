@@ -8,21 +8,18 @@ class PType(str, Enum):
     FULLBODY = "full_body"
     CUSTOM = "custom"
 
-
-
-
 class ProgramCreate(BaseModel):
     program_name: PType
-    program_desciption: dict | None = None
+    program_description: dict | None = None
 
 class ProgramRead(BaseModel):
     model_config = ConfigDict(from_attributes = True)
-    id: int | None=None
+    id: int 
     user_id: int 
     program_name: PType
-    program_desciption: dict 
+    program_description: dict 
 
 
 class ProgramUpdate(BaseModel):
     program_name: PType | None = None
-    program_desciption: dict | None = None
+    program_description: dict | None = None

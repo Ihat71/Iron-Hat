@@ -1,7 +1,9 @@
 from fastapi import FastAPI
-from backend.core.logging import setup_logger
-from backend.core.config import config
-
+from core.logging import setup_logger
+from core.config import config
+from api.v1.auth import auth_router
+from api.v1.profile import profile_router
+from api.v1.programs import program_router
 """ 
 Let's write the requirements here cus why not
 
@@ -42,18 +44,9 @@ app = FastAPI(title="Iron-Hat's API")
 def root():
     return {"message": "welcome to Iron Hat"}
 
-#this function allows users to log their workouts day-to-day and check history of each lift if needed
-@app.get("/logging")
-def logging():
-    return {"message": "sup nerd"}
+app.include_router(auth_router.router)
+app.include_router(profile_router.router)
+app.include_router(program_router.router)
 
-#this function allows users to create their own programs
-@app.get("/program")
-def program():
-    return ...
 
-#this function allows users to login to their accounts or create an account
-@app.get("/login")
-def login():
-    return ...
 

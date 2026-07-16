@@ -10,8 +10,16 @@ class Config(BaseSettings):
         extra="ignore",
     )
 
+    #app
     app_name: str = "Iron-Hat"
     debug: bool = False
+
+    #db
     database_url: str
+
+    #auth
+    secret_key: str
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
 
 config = Config()

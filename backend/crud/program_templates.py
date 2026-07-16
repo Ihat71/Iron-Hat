@@ -14,12 +14,16 @@ def create_program(db: Session, program_data: ProgramCreate) -> ProgramTemplates
 
     return program
 
-def get_program(db: Session, program_id: int) -> ProgramTemplates | None:
+def get_program(db: Session, program_id: int) -> ProgramTemplates :
     return db.get(ProgramTemplates, program_id)
 
-def update_program(db: Session, program_data: ProgramUpdate) -> ProgramTemplates | None:
+def get_user_programs(db: Session, user_id: int) -> list[ProgramTemplates] | None:
+    stmt = select(ProgramTemplates).where(ProgramTemplates.user_id == user_id)
+    return db.execute(stmt).scalars().all()
+
+def update_program(db: Session, program_id: int, program_data: ProgramUpdate) -> ProgramTemplates | None:
     
-    program = get_program(db, program_data.id)
+    program = get_program(db, program_id)
 
     if not program:
         return None
