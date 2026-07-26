@@ -3,9 +3,12 @@ from pydantic import BaseModel, ConfigDict
 
 
 class ExerciseHistoryBase(BaseModel):
+    user_id: int
     workout_log_exercise_id: int
+    exercise_type: str | None = None
     top_weight: float
     max_reps: int
+    sets: int
     total_volume: float
     detailed_sets: dict | None = None
     max_rpe: float | None = None

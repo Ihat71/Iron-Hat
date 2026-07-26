@@ -13,12 +13,12 @@ requirements:
 
 Mandatory:
 
-User authentication
-Workout logging
-Exercise database
-Workout history
+User authentication ✅ 
+Workout logging ✅  
+Exercise database 
+Workout history ✅ 
 PR tracking 
-Program creation
+Program creation ✅ 
 Progress analytics
 Challenges
 achievements

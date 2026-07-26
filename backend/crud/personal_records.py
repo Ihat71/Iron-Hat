@@ -1,54 +1,57 @@
-from sqlalchemy import select
+from sqlalchemy import select, desc
 from sqlalchemy.orm import Session
 
+from backend.models.user import User
 from backend.models.personal_records import PersonalRecords
 from backend.schemas.personal_records import PersonalRecordCreate, PersonalRecordUpdate
 
 
-def create_personal_records(db: Session, workout_data: PersonalRecordCreate) -> PersonalRecords:
-    workout = PersonalRecords(**workout_data.model_dump())
+def create_personal_records(db: Session, record_data: PersonalRecordCreate) -> PersonalRecords:
+    record = PersonalRecords(**record_data.model_dump())
 
-    db.add(workout)
+    db.add(record)
     db.commit()
-    db.refresh(workout)
+    db.refresh(record)
 
-    return workout
+    return record
 
-def get_user_personal_records(db: Session, user_id: int) -> list[PersonalRecords]:
-    stmt = select(PersonalRecords).where(PersonalRecords.user_id == user_id)
+def get_pr(record_id: int, db: Session):
+    return db.get(PersonalRecords, record_id)
+
+def get_max_pr(params: dict, db: Session, user: User):
+    stmt = select(PersonalRecords).where(
+        PersonalRecords.user_id == user.id
+    )
+
+    if params['exercise_id'] is not None:
+        stmt.where(PersonalRecords.exercise_id == params['exercise_id'])
+
+    if params['pr_type'] is not None:
+        stmt.where(PersonalRecords.pr_type == params['pr_type'])
+
+    stmt = stmt.order_by(desc(PersonalRecords.top_weight))
+
+    return db.execute(stmt).scalars().first()
+
+def get_prs_by_params(params: dict, db: Session, user: User):
+    stmt = select(PersonalRecords).where(PersonalRecords.user_id == user.id)
+
+    if params['exercise_id'] is not None:
+        stmt.where(PersonalRecords.exercise_id == params['exercise_id'])
+
+    if params['pr_type'] is not None:
+        stmt.where(PersonalRecords.pr_type == params['pr_type'])
+
     return db.execute(stmt).scalars().all()
 
 
-def get_user_personal_records_by_type(db: Session, user_id: int, workout_type: str) -> list[PersonalRecords]:
+def delete_personal_record(db: Session, record_id: int) -> bool:
+    record = db.get(PersonalRecords, record_id)
 
-    stmt = select(PersonalRecords).where(PersonalRecords.user_id == user_id, PersonalRecords.workout_type == workout_type)
-    return db.execute(stmt).scalars().all()
-
-
-def update_personal_records(db: Session, workout_id: int, pr_data: PersonalRecordUpdate) -> PersonalRecords | None:
-    workout = db.get(PersonalRecords, workout_id)
-
-    if workout is None:
-        return None
-
-    update_data = pr_data.model_dump(exclude_unset=True, exclude={"id"})
-
-    for field, value in update_data.items():
-        setattr(workout, field, value)
-
-    db.commit()
-    db.refresh(workout)
-
-    return workout
-
-
-def delete_personal_records(db: Session, workout_id: int) -> bool:
-    workout = db.get(PersonalRecords, workout_id)
-
-    if workout is None:
+    if record is None:
         return False
 
-    db.delete(workout)
+    db.delete(record)
     db.commit()
 
     return True

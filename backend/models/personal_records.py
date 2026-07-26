@@ -15,11 +15,15 @@ class PersonalRecords(Base):
     exercise_id: Mapped[int] = mapped_column(
         ForeignKey("exercises.id")
     )
-    pr_type: Mapped[str] = mapped_column(String(50)) #1rm, 2rm, bodyweight, etc
-    weight: Mapped[float] = mapped_column(Float)
+    exercise_history_id: Mapped[int | None] = mapped_column(
+        ForeignKey("exercise_history.id")
+    )
+    pr_type: Mapped[Optional[str]] = mapped_column(String(50)) #1rm, 2rm, bodyweight, etc
+    top_weight: Mapped[float] = mapped_column(Float)
     sets: Mapped[Optional[int]] = mapped_column(Integer)
     reps: Mapped[Optional[int]] = mapped_column(Integer)
+    notes: Mapped[str | None] = mapped_column(String(150))
     date: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), 
+        DateTime(timezone=True),
         server_default=func.now()
     )

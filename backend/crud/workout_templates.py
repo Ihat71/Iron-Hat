@@ -8,7 +8,6 @@ from backend.schemas.workout_templates import WorkoutTemplateCreate, WorkoutTemp
 from typing import Any
 
 VALID_COLUMNS = [
-    "program_id",
     "day_number",
     "workout_type",
 ]
@@ -32,12 +31,16 @@ def get_all_workout_templates(db: Session) -> list[WorkoutTemplate] :
 
     return results
 
-def get_user_workout_templates(db: Session, user_id: int) -> list[WorkoutTemplate]:
+def get_all_user_workout_templates(db: Session, user_id: int):
     stmt = select(WorkoutTemplate).join(ProgramTemplates).where(ProgramTemplates.user_id == user_id)
     return db.execute(stmt).scalars().all()
 
+def get_user_workout_templates(db: Session, user_id: int, program_id: int) -> list[WorkoutTemplate]:
+    stmt = select(WorkoutTemplate).join(ProgramTemplates).where(ProgramTemplates.user_id == user_id, ProgramTemplates.id == program_id)
+    return db.execute(stmt).scalars().all()
 
-def get_user_workout_template_by_value(db: Session, user_id: int, value_type: str, value: Any) -> list[WorkoutTemplate]:
+
+def get_user_workout_template_by_value(db: Session, value_type: str, value: Any, program_id: int, user_id: int) -> list[WorkoutTemplate]:
     if value_type not in VALID_COLUMNS:
         raise ValueError("wrong value type selection")
 
@@ -49,6 +52,7 @@ def get_user_workout_template_by_value(db: Session, user_id: int, value_type: st
         .where(
             ProgramTemplates.user_id == user_id,
             column == value,
+            ProgramTemplates.id == program_id
         )
     )
 
