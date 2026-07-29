@@ -1,9 +1,9 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.models.exercise_history import ExerciseHistory
-from backend.models.program_templates import ProgramTemplates
-from backend.schemas.exercise_history import ExerciseHistoryCreate, ExerciseHistoryUpdate
+from models.exercise_history import ExerciseHistory
+from models.program_templates import ProgramTemplates
+from schemas.exercise_history import ExerciseHistoryCreate, ExerciseHistoryUpdate
 
 
 

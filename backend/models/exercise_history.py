@@ -4,7 +4,7 @@ from sqlalchemy import DateTime, String, Integer, Float, func, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import JSONB
 
-from core.database import Base
+from backend.core.database import Base
 
 class ExerciseHistory(Base):
     __tablename__ = "exercise_history"
@@ -24,11 +24,11 @@ class ExerciseHistory(Base):
     # Summary statistics
     exercise_type: Mapped[Optional[str]] = mapped_column(String(50))
     top_weight: Mapped[float] = mapped_column(Float)
-    sets: Mapped[int] = mapped_column(Integer)
+    sets: Mapped[int | None] = mapped_column(Integer)
     max_reps: Mapped[int] = mapped_column(Integer)
     max_rpe: Mapped[float | None] = mapped_column(Float)
 
-    total_volume: Mapped[float] = mapped_column(Float)
+    total_volume: Mapped[float | None] = mapped_column(Float)
 
     # Every performed set
     detailed_sets: Mapped[Optional[dict]] = mapped_column(JSONB)

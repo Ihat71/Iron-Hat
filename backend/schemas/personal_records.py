@@ -33,6 +33,7 @@ class PersonalRecordRead(BaseModel):
     reps: int
     notes: str
     date: datetime
+    created_at: datetime
 
 class PersonalRecordUpdate(BaseModel):
     pr_type: PRType 

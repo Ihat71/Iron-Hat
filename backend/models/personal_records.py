@@ -3,7 +3,7 @@ from typing import Optional
 from sqlalchemy import DateTime, String, Float, Integer, func, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
-from core.database import Base
+from backend.core.database import Base
 
 class PersonalRecords(Base):
     __tablename__ = "personal_records"
@@ -24,6 +24,10 @@ class PersonalRecords(Base):
     reps: Mapped[Optional[int]] = mapped_column(Integer)
     notes: Mapped[str | None] = mapped_column(String(150))
     date: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        server_default=func.now()
+    )
+    created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now()
     )

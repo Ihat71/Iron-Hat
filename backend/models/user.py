@@ -3,7 +3,12 @@ from datetime import datetime
 from sqlalchemy import DateTime, String, func
 from sqlalchemy.orm import Mapped, mapped_column
 
-from core.database import Base
+from backend.core.database import Base
+from enum import Enum
+
+class Gender(str, Enum):
+    MALE = "male"
+    FEMALE = "female"
 
 class User(Base):
     __tablename__ = "users"
@@ -13,6 +18,7 @@ class User(Base):
     username: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     email: Mapped[str] = mapped_column(String(50), unique=True, index=True)
     hashed_password: Mapped[str] = mapped_column(String(255))
+    gender: Mapped[Gender] = mapped_column(String(7))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), 
         server_default=func.now()

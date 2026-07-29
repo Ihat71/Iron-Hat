@@ -1,8 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.models.exercises import Exercises
-from backend.schemas.exercises import ExerciseCreate, ExerciseUpdate
+from models.exercises import Exercises
+from schemas.exercises import ExerciseCreate, ExerciseUpdate
 
 def create_exercise(db: Session, exercise_data: ExerciseCreate) -> Exercises:
 

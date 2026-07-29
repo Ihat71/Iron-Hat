@@ -1,11 +1,11 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.models.user import User
-from backend.models.program_templates import ProgramTemplates
-from backend.models.workout_logs import WorkoutLog
-from backend.models.workout_log_exercises import WorkoutLogExercise
-from backend.schemas.workout_log_exercises import WorkoutLogExerciseCreate, WorkoutLogExerciseUpdate
+from models.user import User
+from models.program_templates import ProgramTemplates
+from models.workout_logs import WorkoutLog
+from models.workout_log_exercises import WorkoutLogExercise
+from schemas.workout_log_exercises import WorkoutLogExerciseCreate, WorkoutLogExerciseUpdate
 from typing import Any
 
 VALID_COLUMNS = [

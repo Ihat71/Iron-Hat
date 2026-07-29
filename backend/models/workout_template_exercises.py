@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy import DateTime, String, Integer, func, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column
 
-from core.database import Base
+from backend.core.database import Base
 
 class WorkoutTemplateExercise(Base):
     __tablename__ = "workout_template_exercises"

@@ -1,8 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.models.program_templates import ProgramTemplates
-from backend.schemas.program_templates import ProgramCreate, ProgramUpdate
+from models.program_templates import ProgramTemplates
+from schemas.program_templates import ProgramCreate, ProgramUpdate
 
 def create_program(db: Session, program_data: ProgramCreate) -> ProgramTemplates:
 

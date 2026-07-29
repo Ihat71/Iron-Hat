@@ -39,7 +39,7 @@ def add_workout_log_exercise_service(db: Session, log_data: WorkoutLogExerciseCr
     exercise_history_data = ExerciseHistory(
         user_id=user.id,
         workout_log_exercise_id=workout_log_exercise.id,
-        exercise_type=exercise_data.exercise_type
+        exercise_type= exercise_data.exercise_type,
         sets = exercise_data.sets,
         top_weight=exercise_data.top_weight,
         max_reps=exercise_data.max_reps,

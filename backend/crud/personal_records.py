@@ -1,9 +1,9 @@
 from sqlalchemy import select, desc
 from sqlalchemy.orm import Session
 
-from backend.models.user import User
-from backend.models.personal_records import PersonalRecords
-from backend.schemas.personal_records import PersonalRecordCreate, PersonalRecordUpdate
+from models.user import User
+from models.personal_records import PersonalRecords
+from schemas.personal_records import PersonalRecordCreate, PersonalRecordUpdate
 
 
 def create_personal_records(db: Session, record_data: PersonalRecordCreate) -> PersonalRecords:

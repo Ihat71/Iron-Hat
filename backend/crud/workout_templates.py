@@ -1,10 +1,10 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.models.user import User
-from backend.models.workout_templates import WorkoutTemplate
-from backend.models.program_templates import ProgramTemplates
-from backend.schemas.workout_templates import WorkoutTemplateCreate, WorkoutTemplateUpdate
+from models.user import User
+from models.workout_templates import WorkoutTemplate
+from models.program_templates import ProgramTemplates
+from schemas.workout_templates import WorkoutTemplateCreate, WorkoutTemplateUpdate
 from typing import Any
 
 VALID_COLUMNS = [

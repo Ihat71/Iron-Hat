@@ -1,10 +1,10 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from backend.models.program_templates import ProgramTemplates
-from backend.models.workout_templates import WorkoutTemplate
-from backend.models.workout_template_exercises import WorkoutTemplateExercise
-from backend.schemas.workout_template_exercises import WorkoutTemplateExerciseCreate, WorkoutTemplateExerciseUpdate
+from models.program_templates import ProgramTemplates
+from models.workout_templates import WorkoutTemplate
+from models.workout_template_exercises import WorkoutTemplateExercise
+from schemas.workout_template_exercises import WorkoutTemplateExerciseCreate, WorkoutTemplateExerciseUpdate
 from typing import Any
 
 

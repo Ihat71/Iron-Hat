@@ -4,6 +4,10 @@ from core.config import config
 from api.v1.auth import auth_router
 from api.v1.profile import profile_router
 from api.v1.programs import program_router
+from api.v1.biometrics import biometrics_router
+from api.v1.workout_templates import workout_template_exercises_router, workout_templates_router
+from api.v1.workout_logs import workout_logs_router, workout_log_exercises_router
+from api.v1.personal_records import personal_records_router
 """ 
 Let's write the requirements here cus why not
 
@@ -17,8 +21,9 @@ User authentication ✅
 Workout logging ✅  
 Exercise database 
 Workout history ✅ 
-PR tracking 
-Program creation ✅ 
+PR tracking ✅
+Program creation ✅
+advanced progress tracking 
 Progress analytics
 Challenges
 achievements
@@ -47,6 +52,9 @@ def root():
 app.include_router(auth_router.router)
 app.include_router(profile_router.router)
 app.include_router(program_router.router)
-
-
-
+app.include_router(biometrics_router.router)
+app.include_router(workout_template_exercises_router.router)
+app.include_router(workout_templates_router.router)
+app.include_router(workout_logs_router.router)
+app.include_router(workout_log_exercises_router.router)
+app.include_router(personal_records_router.router)
