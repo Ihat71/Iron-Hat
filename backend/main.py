@@ -19,7 +19,7 @@ Mandatory:
 
 User authentication ✅ 
 Workout logging ✅  
-Exercise database 
+Exercise database ✅
 Workout history ✅ 
 PR tracking ✅
 Program creation ✅

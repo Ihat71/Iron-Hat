@@ -2,46 +2,29 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from models.exercises import Exercises
-from schemas.exercises import ExerciseCreate, ExerciseUpdate
+from schemas.exercises import ExerciseSearch
 
-def create_exercise(db: Session, exercise_data: ExerciseCreate) -> Exercises:
 
-    exercise = Exercises(**exercise_data.model_dump())
 
-    db.add(exercise)
-    db.commit()
-    db.refresh(exercise)
-
-    return exercise
-
-def get_exercise(db: Session, exercise_id: int) -> Exercises | None:
+def get_exercise(exercise_id: int, db: Session) -> Exercises | None:
     return db.get(Exercises, exercise_id)
 
-def update_exercise(db: Session, exercise_data: ExerciseUpdate) -> Exercises | None:
-    
-    exercise = get_exercise(db, exercise_data.id)
 
-    if not exercise:
-        return None
-    
-    update_data = exercise_data.model_dump(exclude_unset=True, exclude={"id"})
-    
-    for key, value in update_data.items():
-        setattr(exercise, key, value)
-    
-    db.commit()
+def get_all_exercises(page, page_size, db: Session):
+    offset = (page - 1) * page_size
+    stmt = select(Exercises).offset(offset).limit(page_size)
+    return db.execute(stmt).scalars().all()
 
-    db.refresh(exercise)
+def parameter_search(params: ExerciseSearch, db: Session):
+    stmt = select(Exercises)
 
-    return exercise
+    if params.name:
+        stmt.where(Exercises.name.ilike(f"%{params.name}%"))
+    if params.force_type:
+        stmt.where(Exercises.force_type == params.force_type)
+    if params.main_muscle:
+        stmt.where(Exercises.main_muscle == params.main_muscle)
+    if params.difficulty:
+        stmt.where(Exercises.difficulty == params.difficulty)
 
-def delete_exercise(db: Session, exercise_id: int) -> bool:
-    exercise = get_exercise(db, exercise_id)
-
-    if exercise is None:
-        return False
-    
-    db.delete(exercise)
-    db.commit()
-
-    return True
+    return db.execute(stmt).scalars().all()

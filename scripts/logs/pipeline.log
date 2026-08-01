@@ -3805,3 +3805,249 @@ INFO - Loaded 617 exercises
 INFO - Successfully seeded exercises
 INFO - Loaded 617 exercises
 INFO - Successfully seeded exercises
+INFO - Loaded 617 exercises
+ERROR - Exercise seeding failed
+Traceback (most recent call last):
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2127, in _exec_insertmany_context
+    dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~^
+        cursor,
+        ^^^^^^^
+    ...<2 lines>...
+        context,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\psycopg\cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.UndefinedTable: relation "exercises" does not exist
+LINE 1: INSERT INTO exercises (name, equipment, is_variation, utilit...
+                    ^
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\seed_exercise.py", line 70, in seed
+    db.flush()
+    ~~~~~~~~^^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4353, in flush
+    self._flush(objects)
+    ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4488, in _flush
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4449, in _flush
+    flush_context.execute()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 465, in execute
+    rec.execute(self)
+    ~~~~~~~~~~~^^^^^^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 641, in execute
+    util.preloaded.orm_persistence.save_obj(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.mapper,
+        ^^^^^^^^^^^^
+        uow.states_for_mapper_hierarchy(self.mapper, False, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        uow,
+        ^^^^
+    )
+    ^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\orm\persistence.py", line 94, in save_obj
+    _emit_insert_statements(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        base_mapper,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        insert,
+        ^^^^^^^
+    )
+    ^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1144, in _emit_insert_statements
+    result = connection.execute(
+        statement, multiparams, execution_options=execution_options
+    )
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_insertmany_context(dialect, context)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2135, in _exec_insertmany_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e,
+        ^^
+    ...<4 lines>...
+        is_sub_exec=True,
+        ^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2127, in _exec_insertmany_context
+    dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~^
+        cursor,
+        ^^^^^^^
+    ...<2 lines>...
+        context,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\psycopg\cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+sqlalchemy.exc.ProgrammingError: (psycopg.errors.UndefinedTable) relation "exercises" does not exist
+LINE 1: INSERT INTO exercises (name, equipment, is_variation, utilit...
+                    ^
+[SQL: INSERT INTO exercises (name, equipment, is_variation, utility_type, mechanics_type, force_type, target_muscles, main_muscle, secondary_muscles, difficulty, synergist_muscles, stabilizer_muscles, antagonist_muscles, dynamic_stabilizer_muscles, parent_ ... 311954 characters truncated ...  p11, p12, p13, p14, sen_counter) ORDER BY sen_counter RETURNING exercises.id, exercises.id AS id__1]
+[parameters: {'equipment__0': 'Cable', 'utility_type__0': 'Basic or Auxiliary', 'name__0': 'Neck Flexion', 'mechanics_type__0': 'Isolated', 'stabilizer_muscles__0': 'Rectus Abdominis, Obliques', 'target_muscles__0': 'Sternocleidomastoid', 'dynamic_stabilizer_muscles__0': '', 'force_type__0': 'Pull', 'difficulty__0': 2, 'parent_id__0': None, 'antagonist_muscles__0': '', 'secondary_muscles__0': 'Sternocleidomastoid', 'synergist_muscles__0': 'None', 'main_muscle__0': 'Neck', 'is_variation__0': 'No', 'equipment__1': 'Lever (plate loaded)', 'utility_type__1': 'Basic or Auxiliary', 'name__1': 'Neck Flexion', 'mechanics_type__1': 'Isolated', 'stabilizer_muscles__1': 'Latissimus Dorsi, Deltoid, Posterior, Rhomboids, Trapezius, Middle, Trapezius, Lower, Triceps Brachii, Rectus Abdominis, Obliques', 'target_muscles__1': 'Sternocleidomastoid', 'dynamic_stabilizer_muscles__1': '', 'force_type__1': 'Pull', 'difficulty__1': 2, 'parent_id__1': None, 'antagonist_muscles__1': '', 'secondary_muscles__1': 'Sternocleidomastoid', 'synergist_muscles__1': 'None', 'main_muscle__1': 'Neck', 'is_variation__1': 'No', 'equipment__2': 'Lever (plate loaded)', 'utility_type__2': 'Auxiliary', 'name__2': 'Lateral Neck Flexion', 'mechanics_type__2': 'Isolated', 'stabilizer_muscles__2': 'Latissimus Dorsi, Pectoralis Major, Sternal, Pectoralis Major, Clavicular, Coracobrachialis, Pectoralis Minor', 'target_muscles__2': 'Sternocleidomastoid', 'dynamic_stabilizer_muscles__2': '', 'force_type__2': 'Pull', 'difficulty__2': 2, 'parent_id__2': None, 'antagonist_muscles__2': '', 'secondary_muscles__2': 'Sternocleidomastoid, Levator Scapulae', 'synergist_muscles__2': 'Splenius, Erector Spinae, Levator Scapulae, Trapezius, Upper', 'main_muscle__2': 'Neck', 'is_variation__2': 'No', 'equipment__3': 'Lever (selectorized)', 'utility_type__3': 'Basic or Auxiliary', 'name__3': 'Neck Flexion', 'mechanics_type__3': 'Isolated', 'stabilizer_muscles__3': 'Latissimus Dorsi, Deltoid, Posterior, Rhomboids, Trapezius, Middle, Trapezius, Lower, Triceps Brachii, Rectus Abdominis, Obliques' ... 9155 parameters truncated ... 'antagonist_muscles__613': '', 'secondary_muscles__613': 'Tibialis Anterior', 'synergist_muscles__613': 'None', 'main_muscle__613': 'Calves', 'is_variation__613': 'No', 'equipment__614': 'Smith', 'utility_type__614': 'Basic or Auxiliary', 'name__614': 'Reverse Calf Raise', 'mechanics_type__614': 'Isolated', 'stabilizer_muscles__614': 'No significant stabilizers', 'target_muscles__614': 'Tibialis Anterior', 'dynamic_stabilizer_muscles__614': '', 'force_type__614': 'Pull', 'difficulty__614': 2, 'parent_id__614': None, 'antagonist_muscles__614': '', 'secondary_muscles__614': 'Tibialis Anterior', 'synergist_muscles__614': 'None', 'main_muscle__614': 'Calves', 'is_variation__614': 'No', 'equipment__615': 'Body Weight', 'utility_type__615': 'Basic or Auxiliary', 'name__615': 'Reverse Calf Raise', 'mechanics_type__615': 'Isolated', 'stabilizer_muscles__615': '', 'target_muscles__615': 'Tibialis Anterior', 'dynamic_stabilizer_muscles__615': '', 'force_type__615': 'Pull', 'difficulty__615': 2, 'parent_id__615': None, 'antagonist_muscles__615': '', 'secondary_muscles__615': 'Tibialis Anterior', 'synergist_muscles__615': 'None', 'main_muscle__615': 'Calves', 'is_variation__615': 'No', 'equipment__616': 'Body Weight', 'utility_type__616': 'Auxiliary', 'name__616': 'Reverse Calf Raise: Single Leg', 'mechanics_type__616': 'Isolated', 'stabilizer_muscles__616': 'Gluteus Medius, Gluteus Maximus, Quadratus Lumborum, Obliques', 'target_muscles__616': 'Tibialis Anterior', 'dynamic_stabilizer_muscles__616': '', 'force_type__616': 'Pull', 'difficulty__616': 3, 'parent_id__616': None, 'antagonist_muscles__616': '', 'secondary_muscles__616': 'Tibialis Anterior', 'synergist_muscles__616': 'None', 'main_muscle__616': 'Calves', 'is_variation__616': 'Yes'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+INFO - Loaded 617 exercises
+ERROR - Exercise seeding failed
+Traceback (most recent call last):
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2127, in _exec_insertmany_context
+    dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~^
+        cursor,
+        ^^^^^^^
+    ...<2 lines>...
+        context,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\psycopg\cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.UndefinedTable: relation "exercises" does not exist
+LINE 1: INSERT INTO exercises (name, equipment, is_variation, utilit...
+                    ^
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\seed_exercise.py", line 70, in seed
+    db.flush()
+    ~~~~~~~~^^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4353, in flush
+    self._flush(objects)
+    ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4488, in _flush
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4449, in _flush
+    flush_context.execute()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 465, in execute
+    rec.execute(self)
+    ~~~~~~~~~~~^^^^^^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 641, in execute
+    util.preloaded.orm_persistence.save_obj(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.mapper,
+        ^^^^^^^^^^^^
+        uow.states_for_mapper_hierarchy(self.mapper, False, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        uow,
+        ^^^^
+    )
+    ^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\orm\persistence.py", line 94, in save_obj
+    _emit_insert_statements(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        base_mapper,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        insert,
+        ^^^^^^^
+    )
+    ^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1144, in _emit_insert_statements
+    result = connection.execute(
+        statement, multiparams, execution_options=execution_options
+    )
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1421, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 526, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1643, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_insertmany_context(dialect, context)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2135, in _exec_insertmany_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e,
+        ^^
+    ...<4 lines>...
+        is_sub_exec=True,
+        ^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2365, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2127, in _exec_insertmany_context
+    dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~^
+        cursor,
+        ^^^^^^^
+    ...<2 lines>...
+        context,
+        ^^^^^^^^
+    )
+    ^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MIQDAD\Python\iron-hat\scripts\.s_venv\Lib\site-packages\psycopg\cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+sqlalchemy.exc.ProgrammingError: (psycopg.errors.UndefinedTable) relation "exercises" does not exist
+LINE 1: INSERT INTO exercises (name, equipment, is_variation, utilit...
+                    ^
+[SQL: INSERT INTO exercises (name, equipment, is_variation, utility_type, mechanics_type, force_type, target_muscles, main_muscle, secondary_muscles, difficulty, synergist_muscles, stabilizer_muscles, antagonist_muscles, dynamic_stabilizer_muscles, parent_ ... 311954 characters truncated ...  p11, p12, p13, p14, sen_counter) ORDER BY sen_counter RETURNING exercises.id, exercises.id AS id__1]
+[parameters: {'stabilizer_muscles__0': 'Rectus Abdominis, Obliques', 'antagonist_muscles__0': '', 'dynamic_stabilizer_muscles__0': '', 'force_type__0': 'Pull', 'synergist_muscles__0': 'None', 'equipment__0': 'Cable', 'main_muscle__0': 'Neck', 'is_variation__0': 'No', 'difficulty__0': 2, 'parent_id__0': None, 'utility_type__0': 'Basic or Auxiliary', 'name__0': 'Neck Flexion', 'secondary_muscles__0': 'Sternocleidomastoid', 'mechanics_type__0': 'Isolated', 'target_muscles__0': 'Sternocleidomastoid', 'stabilizer_muscles__1': 'Latissimus Dorsi, Deltoid, Posterior, Rhomboids, Trapezius, Middle, Trapezius, Lower, Triceps Brachii, Rectus Abdominis, Obliques', 'antagonist_muscles__1': '', 'dynamic_stabilizer_muscles__1': '', 'force_type__1': 'Pull', 'synergist_muscles__1': 'None', 'equipment__1': 'Lever (plate loaded)', 'main_muscle__1': 'Neck', 'is_variation__1': 'No', 'difficulty__1': 2, 'parent_id__1': None, 'utility_type__1': 'Basic or Auxiliary', 'name__1': 'Neck Flexion', 'secondary_muscles__1': 'Sternocleidomastoid', 'mechanics_type__1': 'Isolated', 'target_muscles__1': 'Sternocleidomastoid', 'stabilizer_muscles__2': 'Latissimus Dorsi, Pectoralis Major, Sternal, Pectoralis Major, Clavicular, Coracobrachialis, Pectoralis Minor', 'antagonist_muscles__2': '', 'dynamic_stabilizer_muscles__2': '', 'force_type__2': 'Pull', 'synergist_muscles__2': 'Splenius, Erector Spinae, Levator Scapulae, Trapezius, Upper', 'equipment__2': 'Lever (plate loaded)', 'main_muscle__2': 'Neck', 'is_variation__2': 'No', 'difficulty__2': 2, 'parent_id__2': None, 'utility_type__2': 'Auxiliary', 'name__2': 'Lateral Neck Flexion', 'secondary_muscles__2': 'Sternocleidomastoid, Levator Scapulae', 'mechanics_type__2': 'Isolated', 'target_muscles__2': 'Sternocleidomastoid', 'stabilizer_muscles__3': 'Latissimus Dorsi, Deltoid, Posterior, Rhomboids, Trapezius, Middle, Trapezius, Lower, Triceps Brachii, Rectus Abdominis, Obliques', 'antagonist_muscles__3': '', 'dynamic_stabilizer_muscles__3': '', 'force_type__3': 'Pull', 'synergist_muscles__3': 'None' ... 9155 parameters truncated ... 'utility_type__613': 'Basic or Auxiliary', 'name__613': 'Seated Reverse Calf Press', 'secondary_muscles__613': 'Tibialis Anterior', 'mechanics_type__613': 'Isolated', 'target_muscles__613': 'Tibialis Anterior', 'stabilizer_muscles__614': 'No significant stabilizers', 'antagonist_muscles__614': '', 'dynamic_stabilizer_muscles__614': '', 'force_type__614': 'Pull', 'synergist_muscles__614': 'None', 'equipment__614': 'Smith', 'main_muscle__614': 'Calves', 'is_variation__614': 'No', 'difficulty__614': 2, 'parent_id__614': None, 'utility_type__614': 'Basic or Auxiliary', 'name__614': 'Reverse Calf Raise', 'secondary_muscles__614': 'Tibialis Anterior', 'mechanics_type__614': 'Isolated', 'target_muscles__614': 'Tibialis Anterior', 'stabilizer_muscles__615': '', 'antagonist_muscles__615': '', 'dynamic_stabilizer_muscles__615': '', 'force_type__615': 'Pull', 'synergist_muscles__615': 'None', 'equipment__615': 'Body Weight', 'main_muscle__615': 'Calves', 'is_variation__615': 'No', 'difficulty__615': 2, 'parent_id__615': None, 'utility_type__615': 'Basic or Auxiliary', 'name__615': 'Reverse Calf Raise', 'secondary_muscles__615': 'Tibialis Anterior', 'mechanics_type__615': 'Isolated', 'target_muscles__615': 'Tibialis Anterior', 'stabilizer_muscles__616': 'Gluteus Medius, Gluteus Maximus, Quadratus Lumborum, Obliques', 'antagonist_muscles__616': '', 'dynamic_stabilizer_muscles__616': '', 'force_type__616': 'Pull', 'synergist_muscles__616': 'None', 'equipment__616': 'Body Weight', 'main_muscle__616': 'Calves', 'is_variation__616': 'Yes', 'difficulty__616': 3, 'parent_id__616': None, 'utility_type__616': 'Auxiliary', 'name__616': 'Reverse Calf Raise: Single Leg', 'secondary_muscles__616': 'Tibialis Anterior', 'mechanics_type__616': 'Isolated', 'target_muscles__616': 'Tibialis Anterior'}]
+(Background on this error at: https://sqlalche.me/e/20/f405)
+INFO - Loaded 617 exercises
+INFO - Successfully seeded exercises
