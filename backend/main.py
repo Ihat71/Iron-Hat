@@ -23,15 +23,17 @@ Exercise database ✅
 Workout history ✅ 
 PR tracking ✅
 Program creation ✅
-advanced progress tracking 
+progress tracking
 Progress analytics
-Challenges
-achievements
+
 ----------------------
 Good to have:
 
 Notifications
 advanced analytics
+Challenges
+achievements
+Exercise recommendations
 
 ----------------------
 

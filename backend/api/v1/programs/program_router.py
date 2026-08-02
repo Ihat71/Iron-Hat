@@ -6,7 +6,6 @@ from api.dependencies import get_current_user
 from services.program_service import get_user_programs_service, create_program_service, update_program_service, delete_program_service
 from models.user import User
 from schemas.program_templates import ProgramCreate, ProgramRead, ProgramUpdate
-from schemas.token import Token
 
 
 router = APIRouter(

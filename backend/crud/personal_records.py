@@ -44,6 +44,20 @@ def get_prs_by_params(params: dict, db: Session, user: User):
 
     return db.execute(stmt).scalars().all()
 
+def get_pr_history(exercises: list[int], db: Session, current_user: User):
+    stmt = select(
+        PersonalRecords.id,
+        PersonalRecords.top_weight,
+        PersonalRecords.pr_type,
+        PersonalRecords.date,
+        PersonalRecords.created_at
+    ).where(
+        PersonalRecords.user_id == current_user.id,
+        PersonalRecords.exercise_id.in_(exercises)
+    )
+
+    return db.execute(stmt).scalars().all()
+
 
 def delete_personal_record(db: Session, record_id: int) -> bool:
     record = db.get(PersonalRecords, record_id)

@@ -20,9 +20,9 @@ def get_bio(bio_id: int, db: Session):
 def get_bio_history(db: Session, user: User):
 
     stmt = select(Biometric).where(Biometric.user_id == user.id)
-    user = db.execute(stmt).scalars().all()
+    bio_user = db.execute(stmt).scalars().all()
 
-    return user
+    return bio_user
 
 def get_recent_bio_history(db: Session, user: User):
     stmt = select(Biometric).where(
@@ -50,6 +50,20 @@ def update_bio(bio: Biometric, update_bio_data: BiometricUpdate, db: Session):
     db.refresh(bio)
 
     return bio
+
+def get_weight_and_bf_history(db: Session, current_user: User):
+    stmt = select(
+        Biometric.id,
+        Biometric.weight,
+        Biometric.manual_body_fat,
+        Biometric.calculated_body_fat,
+        Biometric.recorded_at,
+        Biometric.created_at
+    ).where(
+        Biometric.user_id == current_user.id,
+    )
+
+    return db.execute(stmt).scalars().all()
 
 def delete_bio(bio: Biometric, db:Session) -> bool:
 
