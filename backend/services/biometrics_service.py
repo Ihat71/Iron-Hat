@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
 from datetime import datetime
 
-from crud.user_biometrics import *
-from models.user import User
-from models.user_biometrics import Biometric
-from schemas.user_biometrics import BiometricCreate, BiometricUpdate
+from backend.crud.user_biometrics import *
+from backend.models.user import User
+from backend.models.user_biometrics import Biometric
+from backend.schemas.user_biometrics import BiometricCreate, BiometricUpdate
 from typing import Any
 
 def add_bio_service(data: BiometricCreate, db: Session, user: User):

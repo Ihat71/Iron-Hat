@@ -1,12 +1,12 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-from crud.exercises import (
+from backend.crud.exercises import (
     get_exercise,get_all_exercises,parameter_search
 
 )
-from models.user import User
-from models.exercises import Exercises
-from schemas.exercises import ExerciseSearch
+from backend.models.user import User
+from backend.models.exercises import Exercises
+from backend.schemas.exercises import ExerciseSearch
 
 def get_exercise_service(exercise_id: int, db: Session, current_user: User):
     get_exercise(exercise_id, db)

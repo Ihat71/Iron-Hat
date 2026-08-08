@@ -1,9 +1,9 @@
 from sqlalchemy import select, desc, delete
 from sqlalchemy.orm import Session
-
-from models.user import User
-from models.user_biometrics import Biometric
-from schemas.user_biometrics import BiometricCreate, BiometricUpdate
+from datetime import datetime, timedelta
+from backend.models.user import User
+from backend.models.user_biometrics import Biometric
+from backend.schemas.user_biometrics import BiometricCreate, BiometricUpdate
 
 def add_bio(data: BiometricCreate, db: Session, user: User) -> User:
     bio = Biometric(user.id, **data.model_dump())
@@ -61,6 +61,15 @@ def get_weight_and_bf_history(db: Session, current_user: User):
         Biometric.created_at
     ).where(
         Biometric.user_id == current_user.id,
+    )
+
+    return db.execute(stmt).scalars().all()
+
+def get_weights_last_month(db: Session, user: User):
+    thirty_days_ago = datetime.now() - timedelta(days=30)
+    stmt = select(Biometric.id, Biometric.weight, Biometric.recorded_at).where(
+        Biometric.user_id == user.id,
+        Biometric.recorded_at >= thirty_days_ago
     )
 
     return db.execute(stmt).scalars().all()

@@ -1,9 +1,9 @@
-from sqlalchemy import select, desc
+from sqlalchemy import select, desc, func
 from sqlalchemy.orm import Session
-
-from models.user import User
-from models.personal_records import PersonalRecords
-from schemas.personal_records import PersonalRecordCreate, PersonalRecordUpdate
+from datetime import datetime, timedelta
+from backend.models.user import User
+from backend.models.personal_records import PersonalRecords
+from backend.schemas.personal_records import PersonalRecordCreate, PersonalRecordUpdate
 
 
 def create_personal_records(db: Session, record_data: PersonalRecordCreate) -> PersonalRecords:
@@ -57,6 +57,15 @@ def get_pr_history(exercises: list[int], db: Session, current_user: User):
     )
 
     return db.execute(stmt).scalars().all()
+
+def get_pr_count(days_ago: int, db: Session, user: User):
+    cutoff = datetime.now() - timedelta(days=days_ago)
+    stmt = select(func.count(PersonalRecords.id)).where(
+        PersonalRecords.user_id == user.id,
+        PersonalRecords.date >= cutoff
+    )
+
+    return db.scalar(stmt)
 
 
 def delete_personal_record(db: Session, record_id: int) -> bool:

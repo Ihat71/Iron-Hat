@@ -1,18 +1,18 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-from crud.workout_log_exercises import (
+from backend.crud.workout_log_exercises import (
     create_workout_log_exercise, delete_workout_log_exercise, get_workout_log_exercise,
     get_user_workout_log_exercises_by_program, get_all_user_workout_log_exercises, 
     get_user_workout_log_exercises_by_workout_value, get_workout_log_exercise_by_id
 
 )
-from crud.exercise_history import create_exercise_history, get_exercise_history, delete_exercise_history
-from crud.program_templates import get_program
-from models.user import User
-from models.workout_log_exercises import WorkoutLogExercise
-from models.exercise_history import ExerciseHistory
-from schemas.workout_log_exercises import WorkoutLogExerciseCreate, WorkoutLogExerciseUpdate
-from schemas.exercise_history import ExerciseHistoryCreate
+from backend.crud.exercise_history import create_exercise_history, get_exercise_history, delete_exercise_history
+from backend.crud.program_templates import get_program
+from backend.models.user import User
+from backend.models.workout_log_exercises import WorkoutLogExercise
+from backend.models.exercise_history import ExerciseHistory
+from backend.schemas.workout_log_exercises import WorkoutLogExerciseCreate, WorkoutLogExerciseUpdate
+from backend.schemas.exercise_history import ExerciseHistoryCreate
 from typing import Any
 
 def is_valid(db: Session, user_id, workout_id):

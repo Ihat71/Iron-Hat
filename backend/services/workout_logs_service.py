@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-from crud.workout_logs import create_workout_log, update_workout_log, delete_workout_log, get_workout_log, get_user_workout_logs, get_user_workout_logs_by_program, get_all_user_workout_logs, get_user_workout_logs_by_value
-from crud.program_templates import get_program
-from models.user import User
-from models.workout_logs import WorkoutLog
-from schemas.workout_logs import WorkoutLogCreate, WorkoutLogUpdate
+from backend.crud.workout_logs import create_workout_log, update_workout_log, delete_workout_log, get_workout_log, get_user_workout_logs, get_user_workout_logs_by_program, get_all_user_workout_logs, get_user_workout_logs_by_value
+from backend.crud.program_templates import get_program
+from backend.models.user import User
+from backend.models.workout_logs import WorkoutLog
+from backend.schemas.workout_logs import WorkoutLogCreate, WorkoutLogUpdate
 from typing import Any
 
 def is_valid(db: Session, user_id, workout_id):

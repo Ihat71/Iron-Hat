@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from core.database import get_db
-from api.dependencies import get_current_user
-from services.biometrics_service import (
+from backend.core.database import get_db
+from backend.api.dependencies import get_current_user
+from backend.services.biometrics_service import (
     add_bio_service, get_bio_history_service, get_recent_bio_history_service,
     get_last_5_bio_history_service, update_recent_bio_service, 
     delete_bio_service
 )
-from models.user import User
-from schemas.user_biometrics import BiometricRead, BiometricCreate, BiometricUpdate
+from backend.models.user import User
+from backend.schemas.user_biometrics import BiometricRead, BiometricCreate, BiometricUpdate
 
 
 router = APIRouter(

@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from core.database import get_db
-from api.dependencies import get_current_user
-from services.program_service import get_user_programs_service, create_program_service, update_program_service, delete_program_service
-from models.user import User
-from schemas.program_templates import ProgramCreate, ProgramRead, ProgramUpdate
+from backend.core.database import get_db
+from backend.api.dependencies import get_current_user
+from backend.services.program_service import get_user_programs_service, create_program_service, update_program_service, delete_program_service
+from backend.models.user import User
+from backend.schemas.program_templates import ProgramCreate, ProgramRead, ProgramUpdate
 
 
 router = APIRouter(

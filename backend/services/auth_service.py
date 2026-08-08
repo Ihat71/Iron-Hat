@@ -1,10 +1,10 @@
 from sqlalchemy.orm import Session
-from models.user import User
-from schemas.user import UserCreate
-from schemas.token import Token
-from core.hashing import hash_password, verify_password
-from crud.user import create_user, get_user_by_email, get_user_by_username
-from core.jwt import create_access_token
+from backend.models.user import User
+from backend.schemas.user import UserCreate
+from backend.schemas.token import Token
+from backend.core.hashing import hash_password, verify_password
+from backend.crud.user import create_user, get_user_by_email, get_user_by_username
+from backend.core.jwt import create_access_token
 
 
 def register_user(db: Session, user_data: UserCreate) -> User:

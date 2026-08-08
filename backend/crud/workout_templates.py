@@ -1,10 +1,10 @@
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
 
-from models.user import User
-from models.workout_templates import WorkoutTemplate
-from models.program_templates import ProgramTemplates
-from schemas.workout_templates import WorkoutTemplateCreate, WorkoutTemplateUpdate
+from backend.models.user import User
+from backend.models.workout_templates import WorkoutTemplate
+from backend.models.program_templates import ProgramTemplates
+from backend.schemas.workout_templates import WorkoutTemplateCreate, WorkoutTemplateUpdate
 from typing import Any
 
 VALID_COLUMNS = [
@@ -57,6 +57,10 @@ def get_user_workout_template_by_value(db: Session, value_type: str, value: Any,
     )
 
     return db.execute(stmt).scalars().all()
+
+def get_workout_template_target_consistency_per_week(program_id: int, db: Session, current_user: User):
+    stmt = select(func.count(WorkoutTemplate.id)).join(ProgramTemplates).where(ProgramTemplates.user_id == current_user.id, WorkoutTemplate.program_id == program_id)
+    return db.scalar(stmt)
 
 
 def update_workout_template(db: Session, workout_id: int, workout_data: WorkoutTemplateUpdate) -> WorkoutTemplate | None:

@@ -1,11 +1,12 @@
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Session
+from datetime import datetime, timedelta, UTC
 
-from models.user import User
-from models.program_templates import ProgramTemplates
-from models.workout_logs import WorkoutLog
-from models.workout_logs import WorkoutLog
-from schemas.workout_logs import WorkoutLogCreate, WorkoutLogUpdate
+from backend.models.user import User
+from backend.models.program_templates import ProgramTemplates
+from backend.models.workout_logs import WorkoutLog
+from backend.models.workout_logs import WorkoutLog
+from backend.schemas.workout_logs import WorkoutLogCreate, WorkoutLogUpdate
 from typing import Any
 
 VALID_COLUMNS = [
@@ -61,6 +62,31 @@ def get_user_workout_logs_by_value(db: Session, value_type: str, value: Any, pro
     )
 
     return db.execute(stmt).scalars().all()
+
+def get_workouts_done(days_ago: int, db: Session, user: User):
+    days = datetime.now(UTC) - timedelta(days=days_ago)
+    stmt = select(WorkoutLog).join(ProgramTemplates).where(
+        ProgramTemplates.user_id == user.id,
+        WorkoutLog.inserted_at >= days
+    )
+
+    return db.execute(stmt).scalars().all()
+
+def get_workout_logs_count(program_id: int, days_ago: int, db: Session, user: User) -> int:
+    cutoff = datetime.now(UTC) - timedelta(days=days_ago)
+
+    stmt = (
+        select(func.count(WorkoutLog.id))
+        .join(ProgramTemplates)
+        .where(
+            ProgramTemplates.user_id == user.id,
+            WorkoutLog.inserted_at >= cutoff,
+            ProgramTemplates.id == program_id
+        )
+    )
+
+    return db.scalar(stmt)
+
 
 def update_workout_log(db: Session, log_id: int, log_data: WorkoutLogUpdate) -> WorkoutLog | None:
     workout = db.get(WorkoutLog, log_id)

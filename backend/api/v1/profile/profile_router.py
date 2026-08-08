@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from core.database import get_db
-from api.dependencies import get_current_user
-from services.profile_services import update_username_service, update_email_service, update_full_name_service
-from models.user import User
-from schemas.user import UserCreate, UserRead, UserUpdate, UserNameUpdate, UserEmailUpdate, UserFullNameUpdate
-from schemas.token import Token
+from backend.core.database import get_db
+from backend.api.dependencies import get_current_user
+from backend.services.profile_services import update_username_service, update_email_service, update_full_name_service
+from backend.models.user import User
+from backend.schemas.user import UserCreate, UserRead, UserUpdate, UserNameUpdate, UserEmailUpdate, UserFullNameUpdate
+from backend.schemas.token import Token
 
 router = APIRouter(
     prefix="/profile",

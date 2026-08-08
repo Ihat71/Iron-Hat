@@ -3,7 +3,7 @@ from typing import Any
 
 from jose import JWTError, jwt
 
-from core.config import config
+from backend.core.config import config
 
 
 SECRET_KEY = config.secret_key

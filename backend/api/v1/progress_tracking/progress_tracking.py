@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from core.database import get_db
-from api.dependencies import get_current_user
-from services.progress_tracking import (
+from backend.core.database import get_db
+from backend.api.dependencies import get_current_user
+from backend.services.progress_tracking import (
     get_weight_and_bf_history_service, 
     get_pr_tracking_service,
     get_exercise_history_service,
@@ -12,8 +12,8 @@ from services.progress_tracking import (
     get_tracking_summary
 
 )
-from schemas.tracking import WeightTracking
-from models.user import User
+from backend.schemas.tracking import WeightTracking
+from backend.models.user import User
 
 """
 Requirements for this route:
@@ -32,7 +32,7 @@ router = APIRouter(
     tags=["Tracking"]
 )
 
-@router.get("/weight", response_model=WeightTracking, status_code=status.HTTP_200_OK)
+@router.get("/weight", response_model=list[WeightTracking], status_code=status.HTTP_200_OK)
 def get_weight_and_bf_history(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return get_weight_and_bf_history_service(db, current_user)
 
@@ -52,7 +52,7 @@ def get_workout_history(db: Session = Depends(get_db), current_user: User = Depe
 def get_exercise_history(exercise_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return get_exercise_history_service(exercise_id, db, current_user)
 
-@router.get("/summary", status_code=status.HTTP_200_OK)
-def get_summary(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return get_tracking_summary(db, current_user)
+@router.get("/summary/{program_id}", status_code=status.HTTP_200_OK)
+def get_summary(program_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return get_tracking_summary(program_id, db, current_user)
 

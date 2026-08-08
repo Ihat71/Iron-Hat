@@ -1,11 +1,11 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from models.exercise_history import ExerciseHistory
-from models.program_templates import ProgramTemplates
-from models.workout_log_exercises import WorkoutLogExercise
-from schemas.exercise_history import ExerciseHistoryCreate, ExerciseHistoryUpdate
-from models.user import User
+from backend.models.exercise_history import ExerciseHistory
+from backend.models.program_templates import ProgramTemplates
+from backend.models.workout_log_exercises import WorkoutLogExercise
+from backend.schemas.exercise_history import ExerciseHistoryCreate, ExerciseHistoryUpdate
+from backend.models.user import User
 
 
 

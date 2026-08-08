@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-from crud.user import update_user, get_user_by_username, get_user_by_email
-from models.user import User
-from schemas.user import UserUpdate, UserNameUpdate
+from backend.crud.user import update_user, get_user_by_username, get_user_by_email
+from backend.models.user import User
+from backend.schemas.user import UserUpdate, UserNameUpdate
 from pydantic import EmailStr
 
 

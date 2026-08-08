@@ -1,8 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from models.exercises import Exercises
-from schemas.exercises import ExerciseSearch
+from backend.models.exercises import Exercises
+from backend.schemas.exercises import ExerciseSearch
 
 
 

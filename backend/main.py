@@ -1,13 +1,13 @@
 from fastapi import FastAPI
-from core.logging import setup_logger
-from core.config import config
-from api.v1.auth import auth_router
-from api.v1.profile import profile_router
-from api.v1.programs import program_router
-from api.v1.biometrics import biometrics_router
-from api.v1.workout_templates import workout_template_exercises_router, workout_templates_router
-from api.v1.workout_logs import workout_logs_router, workout_log_exercises_router
-from api.v1.personal_records import personal_records_router
+from backend.core.logging import setup_logger
+from backend.core.config import config
+from backend.api.v1.auth import auth_router
+from backend.api.v1.profile import profile_router
+from backend.api.v1.programs import program_router
+from backend.api.v1.biometrics import biometrics_router
+from backend.api.v1.workout_templates import workout_template_exercises_router, workout_templates_router
+from backend.api.v1.workout_logs import workout_logs_router, workout_log_exercises_router
+from backend.api.v1.personal_records import personal_records_router
 """ 
 Let's write the requirements here cus why not
 

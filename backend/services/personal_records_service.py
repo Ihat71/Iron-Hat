@@ -1,14 +1,14 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-from crud.personal_records import (
+from backend.crud.personal_records import (
     create_personal_records,
 
 )
-from crud.personal_records import *
-from models.user import User
-from models.personal_records import PersonalRecords
-from models.exercise_history import ExerciseHistory
-from schemas.personal_records import PersonalRecordCreate, PersonalRecordUpdate
+from backend.crud.personal_records import *
+from backend.models.user import User
+from backend.models.personal_records import PersonalRecords
+from backend.models.exercise_history import ExerciseHistory
+from backend.schemas.personal_records import PersonalRecordCreate, PersonalRecordUpdate
 from typing import Any
 
 def add_pr_service(data: PersonalRecordCreate, db: Session, user: User):

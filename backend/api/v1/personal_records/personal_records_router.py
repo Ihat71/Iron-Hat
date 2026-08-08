@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from core.database import get_db
-from api.dependencies import get_current_user
-from services.personal_records_service import (add_pr_service, get_pr_history_service, 
+from backend.core.database import get_db
+from backend.api.dependencies import get_current_user
+from backend.services.personal_records_service import (add_pr_service, get_pr_history_service, 
         get_pr_history_by_exercise_service, get_prs_by_exercise_service, 
         get_pr_by_exercise_and_type_service, get_pr_history_by_pr_type_service, 
         delete_pr_service, get_pr_history_by_exercise_and_pr_type_service
 )
-from models.user import User
-from schemas.personal_records import PersonalRecordRead, PersonalRecordCreate, PersonalRecordUpdate
+from backend.models.user import User
+from backend.schemas.personal_records import PersonalRecordRead, PersonalRecordCreate, PersonalRecordUpdate
 
 
 router = APIRouter(

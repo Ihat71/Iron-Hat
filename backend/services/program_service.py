@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-from crud.program_templates import get_user_programs, create_program, update_program, delete_program, get_program
-from models.user import User
-from models.program_templates import ProgramTemplates
-from schemas.program_templates import ProgramCreate, ProgramRead, ProgramUpdate
+from backend.crud.program_templates import get_user_programs, create_program, update_program, delete_program, get_program
+from backend.models.user import User
+from backend.models.program_templates import ProgramTemplates
+from backend.schemas.program_templates import ProgramCreate, ProgramRead, ProgramUpdate
 
 def is_valid_program(db: Session, user: User, program_id: int) -> bool:
     program = get_program(db, program_id)

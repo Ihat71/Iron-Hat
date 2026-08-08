@@ -1,8 +1,8 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from pydantic import EmailStr
-from models.user import User
-from schemas.user import UserCreate, UserUpdate
+from backend.models.user import User
+from backend.schemas.user import UserCreate, UserUpdate
 
 def create_user(db: Session, user: User) -> User:
     

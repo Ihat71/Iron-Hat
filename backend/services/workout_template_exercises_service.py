@@ -1,13 +1,13 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
-from crud.workout_template_exercises import (
+from backend.crud.workout_template_exercises import (
     create_workout_template_exercise, delete_workout_template_exercise, get_workout_template_exercise,
     get_user_workout_template_exercises_by_program, get_all_user_workout_template_exercises, get_user_workout_template_exercises_by_workout_value
 )
-from crud.program_templates import get_program
-from models.user import User
-from models.workout_template_exercises import WorkoutTemplateExercise
-from schemas.workout_template_exercises import WorkoutTemplateExerciseCreate, WorkoutTemplateExerciseUpdate
+from backend.crud.program_templates import get_program
+from backend.models.user import User
+from backend.models.workout_template_exercises import WorkoutTemplateExercise
+from backend.schemas.workout_template_exercises import WorkoutTemplateExerciseCreate, WorkoutTemplateExerciseUpdate
 from typing import Any
 
 def is_valid(db: Session, user_id, workout_id):

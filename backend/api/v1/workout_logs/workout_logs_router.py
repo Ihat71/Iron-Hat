@@ -1,16 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from core.database import get_db
-from api.dependencies import get_current_user
-from services.workout_logs_service import (
+from backend.core.database import get_db
+from backend.api.dependencies import get_current_user
+from backend.services.workout_logs_service import (
     add_workout_log_service,
     get_all_workout_logs_service, get_workout_logs_service, get_workout_log_by_value_service, 
     update_workout_log_service, delete_workout_log_service
 )
-from models.user import User
-from schemas.workout_logs import WorkoutLogCreate, WorkoutLogRead, WorkoutLogUpdate
-from schemas.token import Token
+from backend.models.user import User
+from backend.schemas.workout_logs import WorkoutLogCreate, WorkoutLogRead, WorkoutLogUpdate
+from backend.schemas.token import Token
 from typing import Any
 
 

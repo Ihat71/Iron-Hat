@@ -1,16 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from core.database import get_db
-from api.dependencies import get_current_user
+from backend.core.database import get_db
+from backend.api.dependencies import get_current_user
 
-from services.workout_templates_service import (get_workout_template_by_value_service,  
+from backend.services.workout_templates_service import (get_workout_template_by_value_service,  
             get_all_workout_templates_service, add_workout_template_service, update_workout_template_service, 
             delete_workout_template_service)
 
-from models.user import User
-from models.workout_templates import WorkoutTemplate
-from schemas.workout_templates import WorkoutTemplateCreate, WorkoutTemplateRead, WorkoutTemplateUpdate
+from backend.models.user import User
+from backend.models.workout_templates import WorkoutTemplate
+from backend.schemas.workout_templates import WorkoutTemplateCreate, WorkoutTemplateRead, WorkoutTemplateUpdate
 from typing import Any
 
 router = APIRouter(
