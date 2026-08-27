@@ -4,21 +4,26 @@ from sqlalchemy.orm import Session
 from backend.models.program_templates import ProgramTemplates
 from backend.models.workout_templates import WorkoutTemplate
 from backend.models.workout_template_exercises import WorkoutTemplateExercise
-from backend.schemas.workout_template_exercises import WorkoutTemplateExerciseCreate, WorkoutTemplateExerciseUpdate
+from backend.schemas.workout_template_exercises import WorkoutTemplateExerciseCreate, WorkoutTemplateExerciseUpdate, WorkoutTemplateExerciseRead
 from typing import Any
 
 
-def create_workout_template_exercise(db: Session, exercise_data: WorkoutTemplateExerciseCreate) -> WorkoutTemplateExercise:
-    exercise = WorkoutTemplateExercise(**exercise_data.model_dump())
-
-    db.add(exercise)
+def create_workout_template_exercise(db: Session, exercise_data: list[WorkoutTemplateExercise]) -> WorkoutTemplateExercise:
+    for exercise in exercise_data:
+        db.add(exercise)
     db.commit()
-    db.refresh(exercise)
+    db.refresh(exercise_data[-1]) 
 
-    return exercise
+    return exercise_data[-1]
 
 def get_workout_template_exercise(db: Session, exercise_id: int) -> WorkoutTemplateExercise:
     return db.get(WorkoutTemplateExercise, exercise_id)
+
+def get_workout_template_exercises_by_workout_id(workout_id: int, db: Session) -> list[WorkoutTemplateExerciseRead]:
+    stmt = select(WorkoutTemplateExercise).where(WorkoutTemplateExercise.workout_template_id == workout_id)
+    result = db.execute(stmt).scalars().all()
+
+    return [WorkoutTemplateExerciseRead.model_validate(exercise) for exercise in result]
 
 def get_all_workout_template_exercises(db: Session) -> list[WorkoutTemplateExercise] :
 

@@ -3,11 +3,12 @@ from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from backend.models.user import User
 from backend.models.personal_records import PersonalRecords
-from backend.schemas.personal_records import PersonalRecordCreate, PersonalRecordUpdate
+from backend.schemas.personal_records import PersonalRecordCreate, PersonalRecordUpdate, SearchPR
+from typing import Any
 
 
-def create_personal_records(db: Session, record_data: PersonalRecordCreate) -> PersonalRecords:
-    record = PersonalRecords(**record_data.model_dump())
+def create_personal_records(db: Session, record_data: PersonalRecordCreate, user: User) -> PersonalRecords:
+    record = PersonalRecords(user_id=user.id, **record_data.model_dump())
 
     db.add(record)
     db.commit()
@@ -15,8 +16,13 @@ def create_personal_records(db: Session, record_data: PersonalRecordCreate) -> P
 
     return record
 
-def get_pr(record_id: int, db: Session):
-    return db.get(PersonalRecords, record_id)
+def get_pr(record_id: int, db: Session, user: User):
+    stmt = select(PersonalRecords).where(
+    PersonalRecords.user_id==user.id, 
+    PersonalRecords.id == record_id
+    )
+
+    return db.scalar(stmt)
 
 def get_max_pr(params: dict, db: Session, user: User):
     stmt = select(PersonalRecords).where(
@@ -31,9 +37,19 @@ def get_max_pr(params: dict, db: Session, user: User):
 
     stmt = stmt.order_by(desc(PersonalRecords.top_weight))
 
-    return db.execute(stmt).scalars().first()
+    return db.execute(stmt).scalar_one_or_none()
 
-def get_prs_by_params(params: dict, db: Session, user: User):
+def search_prs(search_data: dict[str, Any], db: Session, user: User):
+    stmt = select(PersonalRecords).where(PersonalRecords.user_id == user.id)
+
+    for key, value in search_data.items():
+        column = getattr(PersonalRecords, key)
+        stmt = stmt.where(column == value)
+
+    return db.execute(stmt).scalars().all()
+
+
+def get_prs_by_params(params: dict[str, Any], db: Session, user: User):
     stmt = select(PersonalRecords).where(PersonalRecords.user_id == user.id)
 
     if params['exercise_id'] is not None:

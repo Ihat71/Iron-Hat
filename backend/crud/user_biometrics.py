@@ -6,7 +6,10 @@ from backend.models.user_biometrics import Biometric
 from backend.schemas.user_biometrics import BiometricCreate, BiometricUpdate
 
 def add_bio(data: BiometricCreate, db: Session, user: User) -> User:
-    bio = Biometric(user.id, **data.model_dump())
+    bio = Biometric(
+        user_id=user.id, 
+        **data.model_dump()
+    )
 
     db.add(bio)
     db.commit()

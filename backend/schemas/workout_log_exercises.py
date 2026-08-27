@@ -1,4 +1,6 @@
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
+from backend.schemas.exercise_history import ExerciseHistoryUpdate
+from backend.schemas.exercises import ExerciseRead
 
 
 class WorkoutLogExerciseBase(BaseModel):
@@ -6,16 +8,18 @@ class WorkoutLogExerciseBase(BaseModel):
     exercise_id: int
 
 
-class WorkoutLogExerciseCreate(WorkoutLogExerciseBase):
-    pass
+class WorkoutLogExerciseCreate(BaseModel):
+    exercise_id: int
 
 
 class WorkoutLogExerciseUpdate(BaseModel):
-    workout_log_id: int | None = None
+    id: int
     exercise_id: int | None = None
-
+    exercise_history: ExerciseHistoryUpdate | None = None
 
 class WorkoutLogExerciseRead(WorkoutLogExerciseBase):
     id: int
+    exercise_id: int
+    exercise: ExerciseRead
 
     model_config = ConfigDict(from_attributes=True)

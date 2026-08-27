@@ -20,12 +20,26 @@ router = APIRouter(
 def get_exercise(exercise_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return get_exercise_service(exercise_id, db, current_user)
 
+@router.get("/search", status_code=status.HTTP_200_OK)
+def search_exercises(
+    name: str | None=None, 
+    force_type: str| None=None,
+    main_muscle: str| None=None, 
+    difficulty: int| None=None, 
+    db: Session = Depends(get_db), 
+    current_user: User = Depends(get_current_user)
+    ):
+    search = ExerciseSearch(
+        name=name,
+        force_type=force_type,
+        main_muscle=main_muscle,
+        difficulty=difficulty
+    )
+    return parameter_search_exercises_service(search, db, current_user)
+
 @router.get("/search/all", response_model=list[ExerciseRead], status_code=status.HTTP_200_OK)
-def search_all_exercises(page: int, page_size: int = 20, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def search_all_exercises(page: int = 1, page_size: int = 20, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return get_all_exercises_service(page, page_size, db, current_user)
 
-@router.get("/exercises")
-def search_exercises(search: ExerciseSearch, db: Session, current_user: User = Depends(get_current_user)):
-    return parameter_search_exercises_service(search, db, current_user)
 
 

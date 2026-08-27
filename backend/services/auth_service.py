@@ -28,7 +28,8 @@ def register_user(db: Session, user_data: UserCreate) -> User:
         full_name = user_data.full_name,
         username = user_data.username,
         email = user_data.email,
-        hashed_password = hashed_password
+        hashed_password = hashed_password,
+        gender = user_data.gender,
     )
 
     return create_user(db, reg_user)
@@ -48,7 +49,7 @@ def authenticate_user(db: Session, username: str, password: str) -> User:
 
 def login_user(db: Session, username: str, password: str) -> Token:
     user = authenticate_user(db, username, password)
-    access_token = create_access_token({"sub": user.username})
+    access_token = create_access_token({"sub": str(user.id)})
 
     return Token(
         access_token = access_token,

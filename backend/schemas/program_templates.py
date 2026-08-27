@@ -7,6 +7,7 @@ class PType(str, Enum):
     PPL = "push_pull_legs"
     FULLBODY = "full_body"
     CUSTOM = "custom"
+    NOPROGRAM = "no_program"
 
 class ProgramCreate(BaseModel):
     program_name: PType

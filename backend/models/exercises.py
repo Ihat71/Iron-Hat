@@ -23,3 +23,4 @@ class Exercises(Base):
     antagonist_muscles: Mapped[str | None] = mapped_column(String(75))
     dynamic_stabilizer_muscles: Mapped[str | None] = mapped_column(String(75))
     parent_id: Mapped[int | None] = mapped_column(ForeignKey("exercises.id"))
+

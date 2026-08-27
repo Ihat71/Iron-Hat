@@ -7,7 +7,8 @@ from backend.schemas.program_templates import ProgramCreate, ProgramRead, Progra
 
 def is_valid_program(db: Session, user: User, program_id: int) -> bool:
     program = get_program(db, program_id)
-
+    if not program:
+        raise ValueError("this program does not exist")
 
     if program.id == program_id and program.user_id == user.id:
         return True

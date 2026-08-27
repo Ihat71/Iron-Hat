@@ -17,11 +17,11 @@ router = APIRouter(
     tags=["Biometrics"]
 )
 
-@router.post("/create", response_model=BiometricRead, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=BiometricRead, status_code=status.HTTP_201_CREATED)
 def create_biometrics(data: BiometricCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return add_bio_service(data, db, current_user)
 
-@router.get("/history", response_model=BiometricRead, status_code=status.HTTP_200_OK)
+@router.get("/history", response_model=list[BiometricRead], status_code=status.HTTP_200_OK)
 def get_bio_history(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return get_bio_history_service(db, current_user)
 
@@ -29,15 +29,15 @@ def get_bio_history(db: Session = Depends(get_db), current_user: User = Depends(
 def get_recent_bio(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return get_recent_bio_history_service(db, current_user)
 
-@router.get("/recent/last-5", response_model=BiometricRead, status_code=status.HTTP_200_OK)
+@router.get("/recent/last-5", response_model=list[BiometricRead], status_code=status.HTTP_200_OK)
 def get_last_5_bio(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return get_last_5_bio_history_service(db, current_user)
 
-@router.patch("/update/{bio_id}", response_model=BiometricRead, status_code=status.HTTP_200_OK)
+@router.patch("/{bio_id}", response_model=BiometricRead, status_code=status.HTTP_200_OK)
 def update_recent_bio(bio_id: int, update_data: BiometricUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return update_recent_bio_service(bio_id, db, update_data, current_user)
+    return update_recent_bio_service(bio_id, update_data, db, current_user)
 
-@router.delete("/delete/{bio_id}", response_model=BiometricRead, status_code=status.HTTP_200_OK)
+@router.delete("/{bio_id}", response_model=bool, status_code=status.HTTP_200_OK)
 def delete_recent_bio(bio_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return delete_bio_service(bio_id, db, current_user)
 

@@ -22,7 +22,7 @@ class ExerciseRead(BaseModel):
     stabilizer_muscles: str
     antagonist_muscles: str
     dynamic_stabilizer_muscles: str
-    parent_id: int
+    parent_id: int | None = None
 
 class ExerciseUpdate(BaseModel):
     exercise_name: str | None = None
@@ -31,5 +31,5 @@ class ExerciseSearch(BaseModel):
     name: str | None = None
     force_type: str | None = None
     main_muscle: str | None = None
-    difficulty: str | None = None
+    difficulty: int | None = None
 

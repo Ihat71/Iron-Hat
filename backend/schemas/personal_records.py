@@ -10,7 +10,6 @@ class PRType(str, Enum):
     BODYWEIGHT = "bodyweight"
 
 class PersonalRecordCreate(BaseModel):
-    user_id: int
     exercise_id: int
     exercise_history_id: int
     pr_type: PRType
@@ -40,3 +39,7 @@ class PersonalRecordUpdate(BaseModel):
     weight: float | None = None
     sets: int | None = None
     reps: int | None = None
+
+class SearchPR(BaseModel):
+    exercise_id: int | None = None
+    pr_type: PRType | None = None

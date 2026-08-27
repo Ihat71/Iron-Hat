@@ -1,10 +1,12 @@
 from datetime import datetime
 from typing import Optional
 from sqlalchemy import DateTime, String, Float, Integer, func, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.core.database import Base
-
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from backend.models.user import User
 class PersonalRecords(Base):
     __tablename__ = "personal_records"
 
@@ -31,3 +33,6 @@ class PersonalRecords(Base):
         DateTime(timezone=True),
         server_default=func.now()
     )
+
+    user: Mapped[list["User"]] = relationship(back_populates="records")
+

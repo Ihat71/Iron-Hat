@@ -1,0 +1,26 @@
+#this is the requests for Mustafa
+GET http://127.0.0.1:8000/biometrics/history
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzIiwiZXhwIjoxNzg2MzYwODEzfQ.taPFHy-n0R2SId06r2rqLIZ8qd6ySdUzhJ2p6tnSxEg
+Content-Type: application/json
+
+
+
+
+# this is for Ahmad
+# DELETE http://127.0.0.1:8000/biometrics/delete/9
+# Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0IiwiZXhwIjoxNzg2MzYxNDgzfQ.TD9pdM-123gXVcNQ8vnOnvVJ3CytJQw5gd8CWMDVUhA
+# Content-Type: application/json
+
+
+
+# this is for logging in
+# POST http://127.0.0.1:8000/auth/login
+# Content-Type: application/json
+
+# {
+#     "username": "test-user-2",
+#     "password": "fifty"
+# }
+
+
+

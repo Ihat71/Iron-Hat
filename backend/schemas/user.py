@@ -25,7 +25,6 @@ class UserUpdate(BaseModel):
 
 class UserNameUpdate(BaseModel):
     username: str
-    last_updated_username: datetime
 
 class UserEmailUpdate(BaseModel):
     email: EmailStr

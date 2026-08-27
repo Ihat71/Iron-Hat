@@ -4,13 +4,13 @@ from pydantic import BaseModel, ConfigDict
 
 class BioBase(BaseModel):
     weight: float
-    height: float
+    height: float | None = None
     waist: float | None = None
     chest: float | None = None
     hips: float | None = None
     manual_body_fat: float | None = None
     notes: str | None = None
-    recorded_at: datetime
+    recorded_at: datetime | None = None
 
 class BiometricCreate(BioBase):
     pass

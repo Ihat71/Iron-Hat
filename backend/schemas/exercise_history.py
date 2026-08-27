@@ -1,9 +1,11 @@
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict
 
-
+class ExerciseHistorySearch(BaseModel):
+    exercise_id: int | None = None
+    exercise_type: str | None = None
+    
 class ExerciseHistoryBase(BaseModel):
-    user_id: int
     workout_log_exercise_id: int
     exercise_type: str | None = None
     top_weight: float
@@ -15,9 +17,17 @@ class ExerciseHistoryBase(BaseModel):
     notes: str | None = None
 
 
-class ExerciseHistoryCreate(ExerciseHistoryBase):
-    pass
-
+class ExerciseHistoryCreate(BaseModel):
+    exercise_id: int
+    workout_log_exercise_id: int |  None = None
+    exercise_type: str | None = None
+    top_weight: float
+    max_reps: int
+    sets: int
+    total_volume: float
+    detailed_sets: dict | None = None
+    max_rpe: float | None = None
+    notes: str | None = None
 
 class ExerciseHistoryRead(ExerciseHistoryBase):
     model_config = ConfigDict(from_attributes=True)
@@ -27,9 +37,11 @@ class ExerciseHistoryRead(ExerciseHistoryBase):
 
 
 class ExerciseHistoryUpdate(BaseModel):
+    id: int
     top_weight: float | None = None
     max_reps: int | None = None
     total_volume: float | None = None
     detailed_sets: dict | None = None
     max_rpe: float | None = None
     notes: str | None = None
+

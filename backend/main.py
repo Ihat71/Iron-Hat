@@ -5,9 +5,11 @@ from backend.api.v1.auth import auth_router
 from backend.api.v1.profile import profile_router
 from backend.api.v1.programs import program_router
 from backend.api.v1.biometrics import biometrics_router
-from backend.api.v1.workout_templates import workout_template_exercises_router, workout_templates_router
-from backend.api.v1.workout_logs import workout_logs_router, workout_log_exercises_router
+from backend.api.v1.workout_templates import workout_templates_router
+from backend.api.v1.workout_logs import workout_logs_router
 from backend.api.v1.personal_records import personal_records_router
+from backend.api.v1.progress_tracking import progress_tracking
+from backend.api.v1.exercise_catalog import exercise_catalog_router
 """ 
 Let's write the requirements here cus why not
 
@@ -23,7 +25,7 @@ Exercise database ✅
 Workout history ✅ 
 PR tracking ✅
 Program creation ✅
-progress tracking
+progress tracking ✅
 Progress analytics
 
 ----------------------
@@ -55,8 +57,8 @@ app.include_router(auth_router.router)
 app.include_router(profile_router.router)
 app.include_router(program_router.router)
 app.include_router(biometrics_router.router)
-app.include_router(workout_template_exercises_router.router)
-app.include_router(workout_templates_router.router)
-app.include_router(workout_logs_router.router)
-app.include_router(workout_log_exercises_router.router)
+app.include_router(exercise_catalog_router.router)
+# app.include_router(workout_templates_router.router)
+# app.include_router(workout_logs_router.router)
+app.include_router(progress_tracking.router)
 app.include_router(personal_records_router.router)

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from backend.crud.user import update_user, get_user_by_username, get_user_by_email
 from backend.models.user import User
 from backend.schemas.user import UserUpdate, UserNameUpdate
@@ -7,7 +7,7 @@ from pydantic import EmailStr
 
 
 def update_username_service(db: Session, current_user: User, user_data: UserNameUpdate):
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     account_created = current_user.created_at
     last_updated = current_user.last_updated_username
     user_id = current_user.id
@@ -20,8 +20,7 @@ def update_username_service(db: Session, current_user: User, user_data: UserName
     difference = now - last_updated
 
     if account_created == last_updated or difference >= timedelta(days=14):
-        user_data.last_updated_username = now
-        update_data = UserUpdate(username=user_data.username, last_updated_username=user_data.last_updated_username)
+        update_data = UserUpdate(username=user_data.username, last_updated_username=now)
         return update_user(db, user_id, update_data)
     else:
         raise ValueError("You can only update username every 14 days")

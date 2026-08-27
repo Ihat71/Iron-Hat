@@ -16,7 +16,12 @@ router = APIRouter(
 @router.get("/", response_model=UserRead, status_code=status.HTTP_200_OK)
 def get_me(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     user_info = UserRead(
-        **current_user.model_dump()
+        username=current_user.username,
+        email=current_user.email,
+        full_name=current_user.full_name,
+        gender=current_user.gender,
+        created_at=current_user.created_at,
+        last_updated_username=current_user.last_updated_username
     )
 
     return user_info

@@ -1,10 +1,13 @@
 from datetime import datetime
 
 from sqlalchemy import DateTime, String, func, ForeignKey, Float
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from backend.core.database import Base
 
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from backend.models.user import User
 class Biometric(Base):
     __tablename__ = "biometrics"
 
@@ -13,7 +16,8 @@ class Biometric(Base):
         ForeignKey("users.id")
     )
     weight: Mapped[float] = mapped_column(Float)
-    height: Mapped[float] = mapped_column(Float)
+    height: Mapped[float | None] = mapped_column(Float)
+    neck: Mapped[float | None] = mapped_column(Float)
     waist: Mapped[float | None] = mapped_column(Float)
     chest: Mapped[float | None] = mapped_column(Float)
     hips: Mapped[float | None] = mapped_column(Float)
@@ -28,3 +32,5 @@ class Biometric(Base):
         DateTime(timezone=True),
         server_default=func.now()
     )
+
+    user: Mapped[list["User"]] = relationship(back_populates="biometry")
