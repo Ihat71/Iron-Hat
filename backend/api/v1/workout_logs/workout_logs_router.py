@@ -6,7 +6,8 @@ from backend.api.dependencies import get_current_user
 from backend.services.workout_logs_service import (
     add_workout_log_service,
     get_all_workout_logs_service, 
-    update_workout_log_service, delete_workout_log_service, get_workout_log_service
+    delete_workout_log_service, get_workout_log_service,
+    delete_workout_log_exercise_service
 )
 from backend.models.user import User
 from backend.schemas.workout_logs import WorkoutLogCreate, WorkoutLogRead, WorkoutLogUpdate, SearchLogs
@@ -31,10 +32,12 @@ def search_all_workout_logs(program_id: int, db: Session = Depends(get_db), curr
 def get_workout_log(program_id: int, workout_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return get_workout_log_service(program_id, workout_id, db, current_user)
 
-@router.patch("/{workout_log_id}", response_model=WorkoutLogRead, status_code=status.HTTP_200_OK)
-def update_workout_logs(program_id: int, workout_id: int, data: WorkoutLogUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return update_workout_log_service(db, data, workout_id, program_id, current_user)
 
 @router.delete("/{workout_log_id}", response_model=bool, status_code=status.HTTP_200_OK)
 def delete_workout_logs(program_id: int, workout_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return delete_workout_log_service(program_id, workout_id, db, current_user)
+
+@router.delete("/{workout_log_id}/exercises/{exercise_id}", response_model=bool, status_code=status.HTTP_200_OK)
+def delete_workout_log_exercise(program_id: int, workout_id: int, exercise_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return delete_workout_log_exercise_service(program_id, workout_id, exercise_id, db, current_user)
+

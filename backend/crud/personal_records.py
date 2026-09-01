@@ -5,6 +5,7 @@ from backend.models.user import User
 from backend.models.personal_records import PersonalRecords
 from backend.schemas.personal_records import PersonalRecordCreate, PersonalRecordUpdate, SearchPR
 from typing import Any
+from backend.core.enums import PRType
 
 
 def create_personal_records(db: Session, record_data: PersonalRecordCreate, user: User) -> PersonalRecords:
@@ -24,20 +25,15 @@ def get_pr(record_id: int, db: Session, user: User):
 
     return db.scalar(stmt)
 
-def get_max_pr(params: dict, db: Session, user: User):
+def get_max_pr(exercise_id: int, pr_type: PRType, db: Session, user: User):
     stmt = select(PersonalRecords).where(
-        PersonalRecords.user_id == user.id
-    )
+        PersonalRecords.user_id == user.id,
+        PersonalRecords.exercise_id == exercise_id,
+        PersonalRecords.pr_type == pr_type
+    ).order_by(desc(PersonalRecords.top_weight)).limit(1)   
 
-    if params['exercise_id'] is not None:
-        stmt.where(PersonalRecords.exercise_id == params['exercise_id'])
 
-    if params['pr_type'] is not None:
-        stmt.where(PersonalRecords.pr_type == params['pr_type'])
-
-    stmt = stmt.order_by(desc(PersonalRecords.top_weight))
-
-    return db.execute(stmt).scalar_one_or_none()
+    return db.scalar(stmt)
 
 def search_prs(search_data: dict[str, Any], db: Session, user: User):
     stmt = select(PersonalRecords).where(PersonalRecords.user_id == user.id)

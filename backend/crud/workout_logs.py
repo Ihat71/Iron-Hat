@@ -73,7 +73,7 @@ def get_workouts_done(days_ago: int, db: Session, user: User):
 
     return db.execute(stmt).scalars().all()
 
-def get_workout_logs_count(program_id: int, days_ago: int, db: Session, user: User) -> int:
+def get_workout_logs_count(program_id: int, days_ago: int, db: Session, user: User) -> int | None:
     cutoff = datetime.now(UTC) - timedelta(days=days_ago)
 
     stmt = (
@@ -89,49 +89,50 @@ def get_workout_logs_count(program_id: int, days_ago: int, db: Session, user: Us
     return db.scalar(stmt)
 
 
-def update_workout_log(db: Session, log_id: int, log_data: WorkoutLogUpdate) -> WorkoutLog | None:
-    workout = db.get(WorkoutLog, log_id)
+# def update_workout_log(db: Session, log_id: int, log_data: WorkoutLogUpdate) -> WorkoutLog | None:
+#     workout = db.get(WorkoutLog, log_id)
 
-    if workout is None:
-        return None
+#     if workout is None:
+#         return None
 
 
 
-    update_data = log_data.model_dump(
-        exclude_unset=True,
-        exclude={"exercises"},
-    )
+#     update_data = log_data.model_dump(
+#         exclude_unset=True,
+#         exclude={"exercises"},
+#     )
 
-    for field, value in update_data.items():
-        setattr(workout, field, value)
+#     for field, value in update_data.items():
+#         setattr(workout, field, value)
 
-    if log_data.exercises is not None:
-        for exercise in log_data.exercises:
-            exercise_log = next(
-                (x for x in workout.exercises if x.id == exercise.id),
-                None,
-            )
-            if exercise_log is None:
-                raise ValueError("This exercise log is not part of this workout")
-            exercise_data = exercise.model_dump(exclude_unset=True, exclude={"id","exercise_history"})
+#     if log_data.exercises is not None:
+#         for exercise in log_data.exercises:
+#             workout_log_exercise = next(
+#                 (x for x in workout.exercises if x.id == exercise.id),
+#                 None,
+#             )
+#             if workout_log_exercise is None:
+#                 raise ValueError("This workout exercise log is not part of this workout")
+            
+#             exercise_data = exercise.model_dump(exclude_unset=True, exclude={"id","exercise_history"})
 
-            for field, value in exercise_data.items():
-                setattr(exercise_log, field, value)
+#             for field, value in exercise_data.items():
+#                 setattr(workout_log_exercise, field, value)
 
-            exercise_history = exercise_log.exercise_history
-            if exercise.exercise_history is not None:
-                if exercise_history is None:
-                    raise ValueError("Exercise history does not exist")
-                history_data = exercise.exercise_history.model_dump(exclude_unset=True, exclude={"id"})
-                for field, value in history_data.items():
-                    setattr(exercise_history, field, value)
+#             exercise_history = workout_log_exercise.exercise_history
+#             if exercise.exercise_history is not None:
+#                 if exercise_history is None:
+#                     raise ValueError("Exercise history does not exist")
+#                 history_data = exercise.exercise_history.model_dump(exclude_unset=True, exclude={"id"})
+#                 for field, value in history_data.items():
+#                     setattr(exercise_history, field, value)
 
     
 
-    db.commit()
-    db.refresh(workout)
+#     db.commit()
+#     db.refresh(workout)
 
-    return workout
+#     return workout
 
 
 def delete_workout_log(db: Session, log_id: int) -> bool:

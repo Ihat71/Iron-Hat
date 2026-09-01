@@ -18,13 +18,19 @@ class PersonalRecords(Base):
         ForeignKey("exercises.id")
     )
     exercise_history_id: Mapped[int | None] = mapped_column(
-        ForeignKey("exercise_history.id")
+        ForeignKey("exercise_history.id", ondelete="CASCADE"),
+        nullable=True
     )
+
+    
     pr_type: Mapped[Optional[str]] = mapped_column(String(50)) #1rm, 2rm, bodyweight, etc
     top_weight: Mapped[float] = mapped_column(Float)
-    sets: Mapped[Optional[int]] = mapped_column(Integer)
+    
+    #--- This is important only for bodyweight PRs ---
     reps: Mapped[Optional[int]] = mapped_column(Integer)
-    notes: Mapped[str | None] = mapped_column(String(150))
+    #------------------------------------------
+
+    notes: Mapped[str | None] = mapped_column(String(250))
     date: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now()

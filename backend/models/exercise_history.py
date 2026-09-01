@@ -22,22 +22,19 @@ class ExerciseHistory(Base):
         ForeignKey("exercises.id")
     )
     workout_log_exercise_id: Mapped[int] = mapped_column(
-        ForeignKey("workout_log_exercises.id"),
+        ForeignKey("workout_log_exercises.id", ondelete="SET NULL"),
         nullable=True,
         unique=True, 
     )
 
     # Summary statistics
-    exercise_type: Mapped[Optional[str]] = mapped_column(String(50))
+    exercise_type: Mapped[str] = mapped_column(String(50))
     top_weight: Mapped[float] = mapped_column(Float)
     sets: Mapped[int | None] = mapped_column(Integer)
     max_reps: Mapped[int] = mapped_column(Integer)
     max_rpe: Mapped[float | None] = mapped_column(Float)
-
-    total_volume: Mapped[float | None] = mapped_column(Float)
-
     # Every performed set
-    detailed_sets: Mapped[Optional[dict]] = mapped_column(JSONB)
+    detailed_sets: Mapped[dict] = mapped_column(JSONB)
 
     # Optional notes
     notes: Mapped[str | None] = mapped_column(String(150))

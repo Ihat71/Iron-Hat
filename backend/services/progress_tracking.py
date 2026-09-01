@@ -4,7 +4,7 @@ from backend.models.user import User
 from backend.models.workout_templates import WorkoutTemplate
 from backend.crud.user_biometrics import get_weight_and_bf_history, get_bio_history, get_weights_last_month
 from backend.crud.personal_records import get_pr_history, get_pr_count
-from backend.crud.exercise_history import get_exercise_history_by_exercise
+from backend.crud.exercise_history import get_exercise_history
 from backend.crud.workout_logs import get_workouts_done, get_workout_logs_count
 from backend.crud.workout_log_exercises import get_user_workout_log_exercise_by_workout
 from backend.crud.workout_templates import get_workout_template_target_consistency_per_week
@@ -19,7 +19,7 @@ def get_pr_tracking_service(exercises: list[int], db: Session, current_user: Use
     return get_pr_history(exercises, db, current_user)
 
 def get_exercise_history_service(exercise_id: int, db: Session, current_user: User):
-    return get_exercise_history_by_exercise(exercise_id, db, current_user)
+    return get_exercise_history(exercise_id, db, current_user)
 
 def get_extra_biometrics_service(db: Session, current_user: User):
     bio_history = get_bio_history(db, current_user)

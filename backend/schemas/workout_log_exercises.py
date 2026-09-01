@@ -1,5 +1,5 @@
 from pydantic import BaseModel, ConfigDict, Field
-from backend.schemas.exercise_history import ExerciseHistoryUpdate
+from backend.schemas.exercise_history import ExerciseHistoryUpdate, ExerciseHistoryCreate
 from backend.schemas.exercises import ExerciseRead
 
 
@@ -10,10 +10,11 @@ class WorkoutLogExerciseBase(BaseModel):
 
 class WorkoutLogExerciseCreate(BaseModel):
     exercise_id: int
+    exercise_history: ExerciseHistoryCreate
 
 
 class WorkoutLogExerciseUpdate(BaseModel):
-    id: int
+    id: int #we need the id to specify which workout log exercises will be changed
     exercise_id: int | None = None
     exercise_history: ExerciseHistoryUpdate | None = None
 

@@ -1,23 +1,15 @@
 from datetime import datetime
 from pydantic import BaseModel, ConfigDict
-from enum import Enum
-
-class PRType(str, Enum):
-    ONE_RM = "one_rm"
-    THREE_RM = "three_rm"
-    FIVE_RM = "five_rm"
-    AMRAP = "amrap"
-    BODYWEIGHT = "bodyweight"
+from backend.core.enums import PRType
 
 class PersonalRecordCreate(BaseModel):
     exercise_id: int
-    exercise_history_id: int
+    exercise_history_id: int | None = None
     pr_type: PRType
     top_weight: float
-    sets: int | None = None
     reps: int | None = None
     notes: str | None = None
-    date: datetime
+    date: datetime | None = None
 
 class PersonalRecordRead(BaseModel):
     model_config = ConfigDict(from_attributes = True)
@@ -27,8 +19,7 @@ class PersonalRecordRead(BaseModel):
     exercise_id: int
     exercise_history_id: int
     pr_type: PRType
-    top_weight: float
-    sets: int 
+    top_weight: float 
     reps: int
     notes: str
     date: datetime
@@ -37,8 +28,8 @@ class PersonalRecordRead(BaseModel):
 class PersonalRecordUpdate(BaseModel):
     pr_type: PRType 
     weight: float | None = None
-    sets: int | None = None
     reps: int | None = None
+    date: datetime | None = None
 
 class SearchPR(BaseModel):
     exercise_id: int | None = None

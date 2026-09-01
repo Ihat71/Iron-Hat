@@ -1,19 +1,22 @@
 from sqlalchemy.orm import Session
 from datetime import datetime, timedelta
 from backend.crud.workout_logs import (create_workout_log, 
-        update_workout_log, delete_workout_log, get_workout_log, 
+        delete_workout_log, get_workout_log, 
         get_user_workout_logs, get_user_workout_logs_by_program, 
         get_all_user_workout_logs, get_user_workout_logs_by_value,
         )
+from backend.services.personal_records_service import check_and_add_pr_service
 from backend.crud.workout_templates import get_workout_template
 from backend.crud.program_templates import get_program
 from backend.models.user import User
 from backend.models.workout_logs import WorkoutLog
 from backend.schemas.workout_logs import WorkoutLogCreate, WorkoutLogUpdate, SearchLogs
+from backend.schemas.personal_records import PersonalRecordCreate
 from backend.models.workout_log_exercises import WorkoutLogExercise
 from typing import Any
 
 def is_valid(db: Session, user: User, workout_id: int, program_id: int):
+    #this is fine but redundant ngl
     workout = get_workout_log(program_id, workout_id, db, user)
     if workout:
         program = get_program(db, workout.program_id)
@@ -29,16 +32,30 @@ def add_workout_log_service(db: Session, data: WorkoutLogCreate, program_id: int
     template = get_workout_template(db, data.workout_template_id, program_id)
     if not template:
         data.workout_template_id = None
-    create_data = WorkoutLog(
+    workout_log_data = WorkoutLog(
         program_id = program_id,
         workout_template_id = data.workout_template_id,
         notes = data.notes
     )
     for exercise in data.exercises:
         exercise_data = WorkoutLogExercise(**exercise.model_dump())
-        create_data.exercises.append(exercise_data)
+        workout_log_data.exercises.append(exercise_data)
     
-    return create_workout_log(db, create_data)
+    workout_log = create_workout_log(db, workout_log_data)
+    #this part of the code checks for PRs from the exercises and adds them if they are in fact PRs
+    for exercise in workout_log.exercises:
+        exercise_history = exercise.exercise_history
+        for detailed_set in exercise_history.detailed_sets:
+            record = PersonalRecordCreate(
+                exercise_id=exercise_history.exercise_id,
+                exercise_history_id=exercise_history.id,
+                pr_type="1rm",
+                reps=detailed_set.reps,
+                top_weight=detailed_set.top_weight,
+            )
+            check_and_add_pr_service(record, exercise_history.exercise_type, db, user)
+
+    return workout_log
 
 
 def get_workout_log_service(program_id: int, workout_id: int, db: Session, user: User):
@@ -55,14 +72,33 @@ def get_all_workout_logs_service(db: Session, program_id: int, user: User):
 def get_workout_logs_service(db: Session, program_id: int, user: User):
     return get_user_workout_logs_by_program(db, user.id, program_id)
 
-def update_workout_log_service(db: Session, data: WorkoutLogUpdate, workout_id: int, program_id: int, user: User):
-    if not is_valid(db, user, workout_id, program_id):
-        raise ValueError("cant access that")
+# def update_workout_log_service(db: Session, data: WorkoutLogUpdate, workout_id: int, program_id: int, user: User):
+#     if not is_valid(db, user, workout_id, program_id):
+#         raise ValueError("cant access that")
     
-    return update_workout_log(db, workout_id, data)
+#     return update_workout_log(db, workout_id, data)
+
 
 def delete_workout_log_service(program_id: int, workout_id: int, db: Session, user: User):
     if not is_valid(db, user, workout_id, program_id):
         raise ValueError("cant access that")
     
     return delete_workout_log(db, workout_id)
+
+def delete_workout_log_exercise_service(program_id: int, workout_id: int, exercise_id: int, db: Session, user: User):
+    if not is_valid(db, user, workout_id, program_id):
+        raise ValueError("cant access that")
+    
+    workout = get_workout_log(program_id, workout_id, db, user)
+    if not workout:
+        raise ValueError("Workout log not found")
+
+    exercise_to_delete = next((ex for ex in workout.exercises if ex.id == exercise_id), None)
+    if not exercise_to_delete:
+        raise ValueError("Exercise log not found in this workout")
+
+    workout.exercises.remove(exercise_to_delete)
+    db.commit()
+    db.refresh(workout)
+
+    return True
