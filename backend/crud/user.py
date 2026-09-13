@@ -1,49 +1,52 @@
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import EmailStr
 from backend.models.user import User
 from backend.schemas.user import UserCreate, UserUpdate
 
-def create_user(db: Session, user: User) -> User:
-    
+async def create_user(db: AsyncSession, user: User) -> User:
+
     db.add(user)
-    db.commit()
-    db.refresh(user)
+    await db.commit()
+    await db.refresh(user)
 
     return user
 
-def get_user_by_id(db: Session, user_id: int) -> User | None:
+async def get_user_by_id(db: AsyncSession, user_id: int) -> User | None:
 
     stmt = select(User).where(User.id == user_id)
-    user = db.execute(stmt).scalar_one_or_none()
+    result = await db.execute(stmt)
+    user = result.scalar_one_or_none()
 
     return user
 
-def get_user_by_email(db: Session, user_email: EmailStr) -> User | None:
+async def get_user_by_email(db: AsyncSession, user_email: EmailStr) -> User | None:
 
     stmt = select(User).where(User.email == user_email)
-    user = db.execute(stmt).scalar_one_or_none()
+    result = await db.execute(stmt)
+    user = result.scalar_one_or_none()
 
     return user
 
-def get_user_by_username(db: Session, user_username: str) -> User | None:
-    
+async def get_user_by_username(db: AsyncSession, user_username: str) -> User | None:
+
     stmt = select(User).where(User.username == user_username)
-    user = db.execute(stmt).scalar_one_or_none()
+    result = await db.execute(stmt)
+    user = result.scalar_one_or_none()
 
     return user
 
-def get_users(db: Session, stmt: select=None) -> list[User]:
+async def get_users(db: AsyncSession, stmt: select=None) -> list[User]:
     if not stmt:
-        result = db.execute(select(User)).scalars().all()
+        result = await db.execute(select(User))
     else:
-        result = db.execute(stmt).scalars().all()
+        result = await db.execute(stmt)
 
-    return result
-    
+    return result.scalars().all()
+
 
 # def update_user(db: Session, user_id: int, new_data: UserUpdate):
-    
+
 #     stmt = update(User).where(User.user_id == user_id).values(
 #         full_name=new_data.full_name,
 #         username=new_data.username,
@@ -54,9 +57,9 @@ def get_users(db: Session, stmt: select=None) -> list[User]:
 
 #     db.commit()
 
-def update_user(db: Session, user_id: int, user_data: UserUpdate) -> User | None:
+async def update_user(db: AsyncSession, user_id: int, user_data: UserUpdate) -> User | None:
 
-    user = db.get(User, user_id)
+    user = await db.get(User, user_id)
 
     if user is None:
         return None
@@ -64,23 +67,22 @@ def update_user(db: Session, user_id: int, user_data: UserUpdate) -> User | None
     update_data = user_data.model_dump(exclude_unset=True)
 
     for field, value in update_data.items():
-        setattr(user, field, value) 
+        setattr(user, field, value)
     #setattr is used to dynamically assign attribute values to objects
 
-    db.commit()
-    db.refresh(user)
+    await db.commit()
+    await db.refresh(user)
 
     return user
 
-def delete_user(db:Session, user_id: int) -> bool:
+async def delete_user(db: AsyncSession, user_id: int) -> bool:
 
-    user = db.get(User, user_id)
+    user = await db.get(User, user_id)
 
     if user is None:
         return False
 
-    db.delete(user)
-    db.commit()
+    await db.delete(user)
+    await db.commit()
 
     return True
-

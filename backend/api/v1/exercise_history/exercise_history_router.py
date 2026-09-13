@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.core.database import get_db
 from backend.api.dependencies import get_current_user
@@ -17,33 +17,31 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=ExerciseHistoryRead, status_code=status.HTTP_200_OK)
-def create_exercise_history(data: ExerciseHistoryCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return create_exercise_history_service(data, db, current_user)
+async def create_exercise_history(data: ExerciseHistoryCreate, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return await create_exercise_history_service(data, db, current_user)
 
 @router.get("/{history_id}", response_model=ExerciseHistoryRead, status_code=status.HTTP_200_OK)
-def get_exercise_history(history_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return get_exercise_history_service(history_id, db, current_user)
+async def get_exercise_history(history_id: int, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return await get_exercise_history_service(history_id, db, current_user)
 
-@router.get("/search", , response_model=list[ExerciseHistoryRead], status_code=status.HTTP_200_OK)
-def search_exercise_history(
+@router.get("/search", response_model=list[ExerciseHistoryRead], status_code=status.HTTP_200_OK)
+async def search_exercise_history(
     exercise_id: int,
     exercise_type: str,
-    db: Session = Depends(get_db), 
+    db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user)
     ):
     search = ExerciseHistorySearch(
         exercise_id = exercise_id,
         exercise_type = exercise_type
     )
-    return parameter_search_exercise_history_service(search, db, current_user)
+    return await parameter_search_exercise_history_service(search, db, current_user)
 
 @router.get("/search/all", response_model=list[ExerciseHistoryRead], status_code=status.HTTP_200_OK)
-def search_all_history(page: int = 1, page_size: int = 10, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return get_all_exercise_history_service(page, page_size, db, current_user)
+async def search_all_history(page: int = 1, page_size: int = 10, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return await get_all_exercise_history_service(page, page_size, db, current_user)
 
 
 @router.delete("/{history_id}", response_model=bool, status_code=status.HTTP_200_OK)
-def delete_exercise_history(history_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return delete_exercise_history_service(history_id, db, current_user)
-
-
+async def delete_exercise_history(history_id: int, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return await delete_exercise_history_service(history_id, db, current_user)

@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.core.database import get_db
 from backend.api.dependencies import get_current_user
 from backend.services.workout_logs_service import (
     add_workout_log_service,
-    get_all_workout_logs_service, 
+    get_all_workout_logs_service,
     delete_workout_log_service, get_workout_log_service,
     delete_workout_log_exercise_service
 )
@@ -21,23 +21,22 @@ router = APIRouter(
 )
 
 @router.post("/", response_model=WorkoutLogRead, status_code=status.HTTP_200_OK)
-def create_workout_logs(data: WorkoutLogCreate, program_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return add_workout_log_service(db, data, program_id, current_user)
+async def create_workout_logs(data: WorkoutLogCreate, program_id: int, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return await add_workout_log_service(db, data, program_id, current_user)
 
 @router.get("/", response_model=list[WorkoutLogRead], status_code=status.HTTP_200_OK)
-def search_all_workout_logs(program_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return get_all_workout_logs_service(db, program_id, current_user)
+async def search_all_workout_logs(program_id: int, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return await get_all_workout_logs_service(db, program_id, current_user)
 
 @router.get("/{workout_log_id}", response_model=WorkoutLogRead, status_code=status.HTTP_200_OK)
-def get_workout_log(program_id: int, workout_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return get_workout_log_service(program_id, workout_id, db, current_user)
+async def get_workout_log(program_id: int, workout_id: int, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return await get_workout_log_service(program_id, workout_id, db, current_user)
 
 
 @router.delete("/{workout_log_id}", response_model=bool, status_code=status.HTTP_200_OK)
-def delete_workout_logs(program_id: int, workout_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return delete_workout_log_service(program_id, workout_id, db, current_user)
+async def delete_workout_logs(program_id: int, workout_id: int, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return await delete_workout_log_service(program_id, workout_id, db, current_user)
 
 @router.delete("/{workout_log_id}/exercises/{exercise_id}", response_model=bool, status_code=status.HTTP_200_OK)
-def delete_workout_log_exercise(program_id: int, workout_id: int, exercise_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return delete_workout_log_exercise_service(program_id, workout_id, exercise_id, db, current_user)
-
+async def delete_workout_log_exercise(program_id: int, workout_id: int, exercise_id: int, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return await delete_workout_log_exercise_service(program_id, workout_id, exercise_id, db, current_user)

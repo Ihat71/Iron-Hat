@@ -1,60 +1,63 @@
 from sqlalchemy import select, desc, delete
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta
 from backend.models.user import User
 from backend.models.user_biometrics import Biometric
 from backend.schemas.user_biometrics import BiometricCreate, BiometricUpdate
 
-def add_bio(data: BiometricCreate, db: Session, user: User) -> User:
+async def add_bio(data: BiometricCreate, db: AsyncSession, user: User) -> User:
     bio = Biometric(
-        user_id=user.id, 
+        user_id=user.id,
         **data.model_dump()
     )
 
     db.add(bio)
-    db.commit()
-    db.refresh(bio)
+    await db.commit()
+    await db.refresh(bio)
 
     return bio
 
-def get_bio(bio_id: int, db: Session):
-    return db.get(Biometric, bio_id)
+async def get_bio(bio_id: int, db: AsyncSession):
+    return await db.get(Biometric, bio_id)
 
-def get_bio_history(db: Session, user: User):
+async def get_bio_history(db: AsyncSession, user: User):
 
     stmt = select(Biometric).where(Biometric.user_id == user.id)
-    bio_user = db.execute(stmt).scalars().all()
+    result = await db.execute(stmt)
+    bio_user = result.scalars().all()
 
     return bio_user
 
-def get_recent_bio_history(db: Session, user: User):
+async def get_recent_bio_history(db: AsyncSession, user: User):
     stmt = select(Biometric).where(
         Biometric.user_id == user.id
     ).order_by(desc(Biometric.recorded_at))
 
-    return db.execute(stmt).scalars().first()
+    result = await db.execute(stmt)
+    return result.scalars().first()
 
-def get_last_5_bio_history(db: Session, user: User):
+async def get_last_5_bio_history(db: AsyncSession, user: User):
     stmt = select(Biometric).where(
         Biometric.user_id == user.id
     ).order_by(desc(Biometric.recorded_at)).fetch(5)
 
-    return db.execute(stmt).scalars().all()
+    result = await db.execute(stmt)
+    return result.scalars().all()
 
-def update_bio(bio: Biometric, update_bio_data: BiometricUpdate, db: Session):
+async def update_bio(bio: Biometric, update_bio_data: BiometricUpdate, db: AsyncSession):
 
     update_data = update_bio_data.model_dump(exclude_unset=True)
 
     for field, value in update_data.items():
-        setattr(bio, field, value) 
+        setattr(bio, field, value)
     #setattr is used to dynamically assign attribute values to objects
 
-    db.commit()
-    db.refresh(bio)
+    await db.commit()
+    await db.refresh(bio)
 
     return bio
 
-def get_weight_and_bf_history(db: Session, current_user: User):
+async def get_weight_and_bf_history(db: AsyncSession, current_user: User):
     stmt = select(
         Biometric.id,
         Biometric.weight,
@@ -66,21 +69,22 @@ def get_weight_and_bf_history(db: Session, current_user: User):
         Biometric.user_id == current_user.id,
     )
 
-    return db.execute(stmt).scalars().all()
+    result = await db.execute(stmt)
+    return result.scalars().all()
 
-def get_weights_last_month(db: Session, user: User):
+async def get_weights_last_month(db: AsyncSession, user: User):
     thirty_days_ago = datetime.now() - timedelta(days=30)
     stmt = select(Biometric.id, Biometric.weight, Biometric.recorded_at).where(
         Biometric.user_id == user.id,
         Biometric.recorded_at >= thirty_days_ago
     )
 
-    return db.execute(stmt).scalars().all()
+    result = await db.execute(stmt)
+    return result.scalars().all()
 
-def delete_bio(bio: Biometric, db:Session) -> bool:
+async def delete_bio(bio: Biometric, db: AsyncSession) -> bool:
 
-    db.delete(bio)
-    db.commit()
+    await db.delete(bio)
+    await db.commit()
 
     return True
-    

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.core.database import get_db
 from backend.api.dependencies import get_current_user
@@ -14,7 +14,7 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=UserRead, status_code=status.HTTP_200_OK)
-def get_me(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+async def get_me(db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
     user_info = UserRead(
         username=current_user.username,
         email=current_user.email,
@@ -27,16 +27,15 @@ def get_me(db: Session = Depends(get_db), current_user: User = Depends(get_curre
     return user_info
 
 @router.patch("/username", response_model=UserRead, status_code=status.HTTP_200_OK)
-def update_my_username(data: UserNameUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+async def update_my_username(data: UserNameUpdate, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
     #can only update username every few days
-    return update_username_service(db, current_user, data)
+    return await update_username_service(db, current_user, data)
 
 @router.patch("/email", response_model=UserRead, status_code=status.HTTP_200_OK)
-def update_my_email(data: UserEmailUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    
-    return update_email_service(db, current_user, data.email)
+async def update_my_email(data: UserEmailUpdate, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+
+    return await update_email_service(db, current_user, data.email)
 
 @router.patch("/name", response_model=UserRead, status_code=status.HTTP_200_OK)
-def update_my_name(data: UserFullNameUpdate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
-    return update_full_name_service(db, current_user, data.full_name)
-
+async def update_my_name(data: UserFullNameUpdate, db: AsyncSession = Depends(get_db), current_user: User = Depends(get_current_user)):
+    return await update_full_name_service(db, current_user, data.full_name)

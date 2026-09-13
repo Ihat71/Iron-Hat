@@ -1,4 +1,4 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from backend.models.user import User
 from backend.schemas.user import UserCreate
 from backend.schemas.token import Token
@@ -7,21 +7,21 @@ from backend.crud.user import create_user, get_user_by_email, get_user_by_userna
 from backend.core.jwt import create_access_token
 
 
-def register_user(db: Session, user_data: UserCreate) -> User:
-    
+async def register_user(db: AsyncSession, user_data: UserCreate) -> User:
+
     username = user_data.username
     email = user_data.email
 
-    check_username = get_user_by_username(db, username)
-    
+    check_username = await get_user_by_username(db, username)
+
     if check_username is not None:
         raise ValueError("username already exists")
-    
-    check_email = get_user_by_email(db, email)
+
+    check_email = await get_user_by_email(db, email)
 
     if check_email is not None:
         raise ValueError("email already exists")
-    
+
     hashed_password = hash_password(user_data.password)
 
     reg_user = User(
@@ -32,31 +32,26 @@ def register_user(db: Session, user_data: UserCreate) -> User:
         gender = user_data.gender,
     )
 
-    return create_user(db, reg_user)
+    return await create_user(db, reg_user)
 
-def authenticate_user(db: Session, username: str, password: str) -> User:
-    user = get_user_by_username(db, username)
+async def authenticate_user(db: AsyncSession, username: str, password: str) -> User:
+    user = await get_user_by_username(db, username)
 
     if user is None:
         raise ValueError("invalid username or password")
-    
+
     is_valid = verify_password(password, user.hashed_password)
 
     if is_valid is False:
         raise ValueError("invalid username or password")
-    
+
     return user
 
-def login_user(db: Session, username: str, password: str) -> Token:
-    user = authenticate_user(db, username, password)
+async def login_user(db: AsyncSession, username: str, password: str) -> Token:
+    user = await authenticate_user(db, username, password)
     access_token = create_access_token({"sub": str(user.id)})
 
     return Token(
         access_token = access_token,
         token_type = "bearer"
     )
-
-
-    
-
-

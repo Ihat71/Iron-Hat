@@ -1,5 +1,6 @@
 from sqlalchemy import select, func
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 from datetime import datetime, timedelta, UTC
 
 from backend.models.user import User
@@ -15,37 +16,44 @@ VALID_COLUMNS = [
 ]
 
 
-def create_workout_log(db: Session, log_data: WorkoutLog) -> WorkoutLog:
+async def create_workout_log(db: AsyncSession, log_data: WorkoutLog) -> WorkoutLog:
 
     db.add(log_data)
-    db.commit()
-    db.refresh(log_data)
+    await db.commit()
+    await db.refresh(log_data)
 
     return log_data
 
 
-def get_workout_log(program_id: int, workout_id: int, db: Session, user: User) -> WorkoutLog | None:
-    stmt = select(WorkoutLog).options(selectinload(WorkoutLog.template)).where(WorkoutLog.program_id == program_id, WorkoutLog.id == workout_id)
-    return db.execute(stmt).scalar_one_or_none()
+async def get_workout_log(program_id: int, workout_id: int, db: AsyncSession, user: User) -> WorkoutLog | None:
+    stmt = select(WorkoutLog).options(
+        selectinload(WorkoutLog.template),
+        selectinload(WorkoutLog.exercises),
+    ).where(WorkoutLog.program_id == program_id, WorkoutLog.id == workout_id)
+    result = await db.execute(stmt)
+    return result.scalar_one_or_none()
 
-def get_all_workout_logs(db: Session) -> list[WorkoutLog] :
-    results = db.execute(select(WorkoutLog)).scalars().all()
+async def get_all_workout_logs(db: AsyncSession) -> list[WorkoutLog] :
+    result = await db.execute(select(WorkoutLog))
 
-    return results
+    return result.scalars().all()
 
-def get_user_workout_logs(db: Session, user_id: int) -> list[WorkoutLog]:
+async def get_user_workout_logs(db: AsyncSession, user_id: int) -> list[WorkoutLog]:
     stmt = select(WorkoutLog).join(ProgramTemplates).where(ProgramTemplates.user_id == user_id)
-    return db.execute(stmt).scalars().all()
+    result = await db.execute(stmt)
+    return result.scalars().all()
 
-def get_all_user_workout_logs(db: Session, program_id: int):
+async def get_all_user_workout_logs(db: AsyncSession, program_id: int):
     stmt = select(WorkoutLog).options(selectinload(WorkoutLog.exercises)).where(WorkoutLog.program_id == program_id)
-    return db.execute(stmt).scalars().all()
+    result = await db.execute(stmt)
+    return result.scalars().all()
 
-def get_user_workout_logs_by_program(db: Session, user_id: int, program_id):
+async def get_user_workout_logs_by_program(db: AsyncSession, user_id: int, program_id):
     stmt = select(WorkoutLog).join(ProgramTemplates).where(ProgramTemplates.user_id == user_id, ProgramTemplates.id == program_id)
-    return db.execute(stmt).scalars().all()
+    result = await db.execute(stmt)
+    return result.scalars().all()
 
-def get_user_workout_logs_by_value(db: Session, value_type: str, value: Any, program_id: int, user_id: int):
+async def get_user_workout_logs_by_value(db: AsyncSession, value_type: str, value: Any, program_id: int, user_id: int):
 
     if value_type not in VALID_COLUMNS:
         raise ValueError("wrong value type selection")
@@ -62,18 +70,20 @@ def get_user_workout_logs_by_value(db: Session, value_type: str, value: Any, pro
         )
     )
 
-    return db.execute(stmt).scalars().all()
+    result = await db.execute(stmt)
+    return result.scalars().all()
 
-def get_workouts_done(days_ago: int, db: Session, user: User):
+async def get_workouts_done(days_ago: int, db: AsyncSession, user: User):
     days = datetime.now(UTC) - timedelta(days=days_ago)
     stmt = select(WorkoutLog).join(ProgramTemplates).where(
         ProgramTemplates.user_id == user.id,
         WorkoutLog.inserted_at >= days
     )
 
-    return db.execute(stmt).scalars().all()
+    result = await db.execute(stmt)
+    return result.scalars().all()
 
-def get_workout_logs_count(program_id: int, days_ago: int, db: Session, user: User) -> int | None:
+async def get_workout_logs_count(program_id: int, days_ago: int, db: AsyncSession, user: User) -> int | None:
     cutoff = datetime.now(UTC) - timedelta(days=days_ago)
 
     stmt = (
@@ -86,7 +96,7 @@ def get_workout_logs_count(program_id: int, days_ago: int, db: Session, user: Us
         )
     )
 
-    return db.scalar(stmt)
+    return await db.scalar(stmt)
 
 
 # def update_workout_log(db: Session, log_id: int, log_data: WorkoutLogUpdate) -> WorkoutLog | None:
@@ -113,7 +123,7 @@ def get_workout_logs_count(program_id: int, days_ago: int, db: Session, user: Us
 #             )
 #             if workout_log_exercise is None:
 #                 raise ValueError("This workout exercise log is not part of this workout")
-            
+
 #             exercise_data = exercise.model_dump(exclude_unset=True, exclude={"id","exercise_history"})
 
 #             for field, value in exercise_data.items():
@@ -127,7 +137,7 @@ def get_workout_logs_count(program_id: int, days_ago: int, db: Session, user: Us
 #                 for field, value in history_data.items():
 #                     setattr(exercise_history, field, value)
 
-    
+
 
 #     db.commit()
 #     db.refresh(workout)
@@ -135,13 +145,13 @@ def get_workout_logs_count(program_id: int, days_ago: int, db: Session, user: Us
 #     return workout
 
 
-def delete_workout_log(db: Session, log_id: int) -> bool:
-    workout = db.get(WorkoutLog, log_id)
+async def delete_workout_log(db: AsyncSession, log_id: int) -> bool:
+    workout = await db.get(WorkoutLog, log_id)
 
     if workout is None:
         return False
 
-    db.delete(workout)
-    db.commit()
+    await db.delete(workout)
+    await db.commit()
 
     return True

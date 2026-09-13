@@ -1,5 +1,6 @@
 from sqlalchemy import select, func
-from sqlalchemy.orm import Session, selectinload
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from backend.models.user import User
 from backend.models.workout_templates import WorkoutTemplate
@@ -13,40 +14,44 @@ VALID_COLUMNS = [
     "workout_type",
 ]
 
-def create_workout_template(db: Session, workout: WorkoutTemplate) -> WorkoutTemplate:
+async def create_workout_template(db: AsyncSession, workout: WorkoutTemplate) -> WorkoutTemplate:
 
 
     db.add(workout)
-    db.commit()
-    db.refresh(workout)
+    await db.commit()
+    await db.refresh(workout)
 
     return workout
 
 
-def get_workout_template(db: Session, workout_id: int | None, program_id: int) -> WorkoutTemplate | None:
+async def get_workout_template(db: AsyncSession, workout_id: int | None, program_id: int) -> WorkoutTemplate | None:
     stmt = select(WorkoutTemplate).options(selectinload(WorkoutTemplate.exercises)).where((WorkoutTemplate.id == workout_id) & (WorkoutTemplate.program_id == program_id))
-    return db.execute(stmt).scalar_one_or_none()
+    result = await db.execute(stmt)
+    return result.scalar_one_or_none()
 
-def get_all_workout_templates(db: Session) -> list[WorkoutTemplate] :
+async def get_all_workout_templates(db: AsyncSession) -> list[WorkoutTemplate] :
 
-    results = db.execute(select(WorkoutTemplate)).scalars().all()
+    result = await db.execute(select(WorkoutTemplate))
 
-    return results
+    return result.scalars().all()
 
-def get_all_user_workout_templates(db: Session, user_id: int):
+async def get_all_user_workout_templates(db: AsyncSession, user_id: int):
     stmt = select(WorkoutTemplate).join(ProgramTemplates).where(ProgramTemplates.user_id == user_id)
-    return db.execute(stmt).scalars().all()
+    result = await db.execute(stmt)
+    return result.scalars().all()
 
-def get_all_user_workout_templates_by_program_id(db: Session, user_id: int, program_id: int):
+async def get_all_user_workout_templates_by_program_id(db: AsyncSession, user_id: int, program_id: int):
     stmt = select(WorkoutTemplate).join(ProgramTemplates).where(ProgramTemplates.user_id == user_id, ProgramTemplates.id == program_id)
-    return db.execute(stmt).scalars().all()
+    result = await db.execute(stmt)
+    return result.scalars().all()
 
-def get_user_workout_templates(db: Session, user_id: int, program_id: int) -> list[WorkoutTemplate]:
+async def get_user_workout_templates(db: AsyncSession, user_id: int, program_id: int) -> list[WorkoutTemplate]:
     stmt = select(WorkoutTemplate).join(ProgramTemplates).where(ProgramTemplates.user_id == user_id, ProgramTemplates.id == program_id)
-    return db.execute(stmt).scalars().all()
+    result = await db.execute(stmt)
+    return result.scalars().all()
 
 
-def get_user_workout_template_by_value(db: Session, workout_type: str | None, day_number: int | None, program_id: int, user_id: int) -> list[WorkoutTemplate]:
+async def get_user_workout_template_by_value(db: AsyncSession, workout_type: str | None, day_number: int | None, program_id: int, user_id: int) -> list[WorkoutTemplate]:
 
     stmt = select(WorkoutTemplate).where(
         WorkoutTemplate.program_id == program_id
@@ -57,15 +62,18 @@ def get_user_workout_template_by_value(db: Session, workout_type: str | None, da
     if day_number is not None:
         stmt = stmt.where(WorkoutTemplate.day_number == day_number)
 
-    return db.execute(stmt).scalars().all()
+    result = await db.execute(stmt)
+    return result.scalars().all()
 
-def get_workout_template_target_consistency_per_week(program_id: int, db: Session, current_user: User):
+async def get_workout_template_target_consistency_per_week(program_id: int, db: AsyncSession, current_user: User):
     stmt = select(func.count(WorkoutTemplate.id)).join(ProgramTemplates).where(ProgramTemplates.user_id == current_user.id, WorkoutTemplate.program_id == program_id)
-    return db.scalar(stmt)
+    return await db.scalar(stmt)
 
 
-def update_workout_template(db: Session, workout_id: int, workout_data: WorkoutTemplateUpdate) -> WorkoutTemplate | None:
-    workout = db.get(WorkoutTemplate, workout_id)
+async def update_workout_template(db: AsyncSession, workout_id: int, workout_data: WorkoutTemplateUpdate) -> WorkoutTemplate | None:
+    stmt = select(WorkoutTemplate).options(selectinload(WorkoutTemplate.exercises)).where(WorkoutTemplate.id == workout_id)
+    result = await db.execute(stmt)
+    workout = result.scalar_one_or_none()
 
     if workout is None:
         return None
@@ -85,23 +93,23 @@ def update_workout_template(db: Session, workout_id: int, workout_data: WorkoutT
 
         for exercise in workout_data.exercises:
             new_exercise = WorkoutTemplateExercise(workout_template_id=workout.id, **exercise.model_dump())
-            workout.exercises.append(new_exercise)  
+            workout.exercises.append(new_exercise)
 
-    
 
-    db.commit()
-    db.refresh(workout)
+
+    await db.commit()
+    await db.refresh(workout)
 
     return workout
 
 
-def delete_workout_template(db: Session, workout_id: int) -> bool:
-    workout = db.get(WorkoutTemplate, workout_id)
+async def delete_workout_template(db: AsyncSession, workout_id: int) -> bool:
+    workout = await db.get(WorkoutTemplate, workout_id)
 
     if workout is None:
         return False
 
-    db.delete(workout)
-    db.commit()
+    await db.delete(workout)
+    await db.commit()
 
     return True

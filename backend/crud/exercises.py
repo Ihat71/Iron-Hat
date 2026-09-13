@@ -1,22 +1,24 @@
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.models.exercises import Exercises
 from backend.schemas.exercises import ExerciseSearch
 
 
 
-def get_exercise(exercise_id: int, db: Session) -> Exercises | None:
+async def get_exercise(exercise_id: int, db: AsyncSession) -> Exercises | None:
     stmt = select(Exercises).where(Exercises.id == exercise_id)
-    return db.execute(stmt).scalar_one_or_none()
+    result = await db.execute(stmt)
+    return result.scalar_one_or_none()
 
 
-def get_all_exercises(page, page_size, db: Session):
+async def get_all_exercises(page, page_size, db: AsyncSession):
     offset = (page - 1) * page_size
     stmt = select(Exercises).offset(offset).limit(page_size)
-    return db.execute(stmt).scalars().all()
+    result = await db.execute(stmt)
+    return result.scalars().all()
 
-def parameter_search(params: ExerciseSearch, db: Session):
+async def parameter_search(params: ExerciseSearch, db: AsyncSession):
     stmt = select(Exercises)
 
     if params.name:
@@ -28,4 +30,5 @@ def parameter_search(params: ExerciseSearch, db: Session):
     if params.difficulty:
         stmt = stmt.where(Exercises.difficulty == params.difficulty)
 
-    return db.execute(stmt).scalars().all()
+    result = await db.execute(stmt)
+    return result.scalars().all()

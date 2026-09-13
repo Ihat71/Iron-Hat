@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, status
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api.dependencies import get_current_user
 from backend.core.database import get_db
@@ -27,8 +27,8 @@ router = APIRouter(
 
 
 @router.post("/",response_model=WorkoutTemplateRead,status_code=status.HTTP_201_CREATED,)
-def create_workout_template(program_id: int,data: WorkoutTemplateCreate,db: Session = Depends(get_db),current_user: User = Depends(get_current_user),):
-    return add_workout_template_service(
+async def create_workout_template(program_id: int,data: WorkoutTemplateCreate,db: AsyncSession = Depends(get_db),current_user: User = Depends(get_current_user),):
+    return await add_workout_template_service(
         db,
         data,
         program_id,
@@ -37,8 +37,8 @@ def create_workout_template(program_id: int,data: WorkoutTemplateCreate,db: Sess
 
 
 @router.get("/", response_model=list[WorkoutTemplateRead],status_code=status.HTTP_200_OK,)
-def get_workout_templates(program_id: int,db: Session = Depends(get_db),current_user: User = Depends(get_current_user),):
-    return get_all_workout_templates_service(
+async def get_workout_templates(program_id: int,db: AsyncSession = Depends(get_db),current_user: User = Depends(get_current_user),):
+    return await get_all_workout_templates_service(
         program_id,
         db,
         current_user,
@@ -46,12 +46,12 @@ def get_workout_templates(program_id: int,db: Session = Depends(get_db),current_
 
 
 @router.get("/search",response_model=list[WorkoutTemplateRead],status_code=status.HTTP_200_OK,)
-def search_workout_templates(program_id: int,
+async def search_workout_templates(program_id: int,
                              workout_type: str | None = None,
                              day_number: int | None = None,
-                             db: Session = Depends(get_db), 
+                             db: AsyncSession = Depends(get_db),
                              current_user: User = Depends(get_current_user),):
-    return get_workout_template_by_params_service(
+    return await get_workout_template_by_params_service(
         program_id,
         workout_type,
         day_number,
@@ -62,8 +62,8 @@ def search_workout_templates(program_id: int,
 
 
 @router.get("/{workout_template_id}",response_model=WorkoutTemplateRead,status_code=status.HTTP_200_OK,)
-def get_workout_template(program_id: int,workout_template_id: int,db: Session = Depends(get_db),current_user: User = Depends(get_current_user),):
-    return get_workout_template_service(
+async def get_workout_template(program_id: int,workout_template_id: int,db: AsyncSession = Depends(get_db),current_user: User = Depends(get_current_user),):
+    return await get_workout_template_service(
         db,
         program_id,
         workout_template_id,
@@ -72,8 +72,8 @@ def get_workout_template(program_id: int,workout_template_id: int,db: Session = 
 
 
 @router.patch("/{workout_template_id}",response_model=WorkoutTemplateRead,status_code=status.HTTP_200_OK,)
-def update_workout_template(program_id: int,workout_template_id: int,data: WorkoutTemplateUpdate,db: Session = Depends(get_db),current_user: User = Depends(get_current_user)):
-    return update_workout_template_service(
+async def update_workout_template(program_id: int,workout_template_id: int,data: WorkoutTemplateUpdate,db: AsyncSession = Depends(get_db),current_user: User = Depends(get_current_user)):
+    return await update_workout_template_service(
         db,
         data,
         program_id,
@@ -84,8 +84,8 @@ def update_workout_template(program_id: int,workout_template_id: int,data: Worko
 
 @router.delete(
     "/{workout_template_id}",response_model=bool,status_code=status.HTTP_200_OK,)
-def delete_workout_template(program_id: int, workout_template_id: int,db: Session = Depends(get_db),current_user: User = Depends(get_current_user),):
-    return delete_workout_template_service(
+async def delete_workout_template(program_id: int, workout_template_id: int,db: AsyncSession = Depends(get_db),current_user: User = Depends(get_current_user),):
+    return await delete_workout_template_service(
         db,
         program_id,
         workout_template_id,

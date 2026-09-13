@@ -1,5 +1,5 @@
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from datetime import datetime, timedelta
 from backend.crud.personal_records import (
     create_personal_records,
@@ -19,34 +19,34 @@ reps_map = {
     5: "5rm"
 }
 
-def add_pr_service(data: PersonalRecordCreate, db: Session, user: User):
+async def add_pr_service(data: PersonalRecordCreate, db: AsyncSession, user: User):
 
-    max_record = get_max_pr(data.exercise_id, data.pr_type, db, user)
+    max_record = await get_max_pr(data.exercise_id, data.pr_type, db, user)
 
 
     if not max_record or data.top_weight >= max_record.top_weight:
-        return create_personal_records(db, data, user)
+        return await create_personal_records(db, data, user)
     else:
         raise ValueError("you have stronger lifts than this")
 
-def get_pr_service(record_id: int, db: Session, user: User):
-    get_pr(record_id, db, user)
+async def get_pr_service(record_id: int, db: AsyncSession, user: User):
+    await get_pr(record_id, db, user)
 
-def search_prs_service(data: SearchPR, db: Session, user: User):
+async def search_prs_service(data: SearchPR, db: AsyncSession, user: User):
     search_data = data.model_dump(exclude_unset=True)
 
-    return search_prs(search_data, db, user)
+    return await search_prs(search_data, db, user)
 
-def get_pr_history_service(db: Session, user: User):
+async def get_pr_history_service(db: AsyncSession, user: User):
     params = {}
 
-    return get_prs_by_params(params, db, user)
+    return await get_prs_by_params(params, db, user)
 
 
 #so pr history gets all prs from the past and present while normal get_prs
 #get the max prs of the present. Both are based on parameters
 
-def check_and_add_pr_service(record: PersonalRecordCreate,exercise_type: str,db: Session,user: User) -> None:
+async def check_and_add_pr_service(record: PersonalRecordCreate,exercise_type: str,db: AsyncSession,user: User) -> None:
 
     # Determine which PR types this set can qualify for.
     pr_type_list = []
@@ -65,8 +65,8 @@ def check_and_add_pr_service(record: PersonalRecordCreate,exercise_type: str,db:
 
         # Because PR history is monotonic, the latest PR is
         # also the greatest PR for this user/exercise/type.
-        
-        latest_pr = get_max_pr(record.exercise_id, pr_type, db, user)
+
+        latest_pr = await get_max_pr(record.exercise_id, pr_type, db, user)
 
         # No previous PR -> establish the base PR.
         if latest_pr is None:
@@ -102,16 +102,16 @@ def check_and_add_pr_service(record: PersonalRecordCreate,exercise_type: str,db:
 
         # Make the newly-created PR visible to subsequent queries
         # in this transaction.
-        db.flush()
-
-    
+        await db.flush()
 
 
 
 
-def delete_pr_service(record_id: int, db: Session, user: User):
-    record = get_pr(record_id, db, user)
+
+
+async def delete_pr_service(record_id: int, db: AsyncSession, user: User):
+    record = await get_pr(record_id, db, user)
     if not record:
         raise ValueError("Could not find that record")
 
-    return delete_personal_record(db, record_id)
+    return await delete_personal_record(db, record_id)

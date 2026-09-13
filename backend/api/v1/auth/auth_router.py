@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi.security import OAuth2PasswordRequestForm
 
 from backend.core.database import get_db
@@ -16,9 +16,9 @@ router = APIRouter(
 
 
 @router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED,)
-def register(user_data: UserCreate, db: Session = Depends(get_db)):
+async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
     try:
-        user = register_user(db, user_data)
+        user = await register_user(db, user_data)
         return user
 
     except ValueError as e:
@@ -26,13 +26,13 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
             status_code=status.HTTP_409_CONFLICT,
             detail=str(e),
         )
-    
+
 @router.post("/login", response_model=Token, status_code=status.HTTP_200_OK)
-def login(user_data: UserLogin, db: Session = Depends(get_db)):
+async def login(user_data: UserLogin, db: AsyncSession = Depends(get_db)):
     try:
-        token = login_user(db, user_data.username, user_data.password)
+        token = await login_user(db, user_data.username, user_data.password)
         return token
-    
+
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -41,9 +41,9 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
 
 
 @router.post("/token", response_model=Token)
-def login_for_swagger(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+async def login_for_swagger(form_data: OAuth2PasswordRequestForm = Depends(), db: AsyncSession = Depends(get_db)):
     try:
-        return login_user(db, form_data.username, form_data.password)
+        return await login_user(db, form_data.username, form_data.password)
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=str(e))
     
