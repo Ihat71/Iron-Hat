@@ -1,0 +1,6 @@
+# Test-only dependencies, on top of whatever's already installed in
+# backend/venv for the app itself (fastapi, sqlalchemy, psycopg, etc).
+pytest==9.1.1
+pytest-asyncio==1.4.0
+pytest-cov==7.1.0
+httpx==0.28.1

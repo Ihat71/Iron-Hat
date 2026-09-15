@@ -9,5 +9,6 @@ from backend.models.workout_templates import WorkoutTemplate
 from backend.models.workout_logs import WorkoutLog
 from backend.models.workout_template_exercises import WorkoutTemplateExercise
 from backend.models.user_biometrics import Biometric
+from backend.models.tracked_exercises import TrackedExercise
 
-__all__ = ["User", "WorkoutLog", "WorkoutLogExercise","Exercises", "ExerciseHistory", "PersonalRecords", "ProgramTemplates", "WorkoutTemplate", "WorkoutTemplateExercise", "Biometric"]
+__all__ = ["User", "WorkoutLog", "WorkoutLogExercise","Exercises", "ExerciseHistory", "PersonalRecords", "ProgramTemplates", "WorkoutTemplate", "WorkoutTemplateExercise", "Biometric", "TrackedExercise"]

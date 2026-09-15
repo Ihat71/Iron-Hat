@@ -59,16 +59,10 @@ async def get_prs_by_params(params: dict[str, Any], db: AsyncSession, user: User
     return result.scalars().all()
 
 async def get_pr_history(exercises: list[int], db: AsyncSession, current_user: User):
-    stmt = select(
-        PersonalRecords.id,
-        PersonalRecords.top_weight,
-        PersonalRecords.pr_type,
-        PersonalRecords.date,
-        PersonalRecords.created_at
-    ).where(
+    stmt = select(PersonalRecords).where(
         PersonalRecords.user_id == current_user.id,
         PersonalRecords.exercise_id.in_(exercises)
-    )
+    ).order_by(PersonalRecords.date)
 
     result = await db.execute(stmt)
     return result.scalars().all()
@@ -78,6 +72,15 @@ async def get_pr_count(days_ago: int, db: AsyncSession, user: User):
     stmt = select(func.count(PersonalRecords.id)).where(
         PersonalRecords.user_id == user.id,
         PersonalRecords.date >= cutoff
+    )
+
+    return await db.scalar(stmt)
+
+async def get_pr_count_in_range(db: AsyncSession, user: User, start: datetime, end: datetime) -> int:
+    stmt = select(func.count(PersonalRecords.id)).where(
+        PersonalRecords.user_id == user.id,
+        PersonalRecords.date >= start,
+        PersonalRecords.date < end,
     )
 
     return await db.scalar(stmt)

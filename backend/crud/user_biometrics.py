@@ -58,26 +58,30 @@ async def update_bio(bio: Biometric, update_bio_data: BiometricUpdate, db: Async
     return bio
 
 async def get_weight_and_bf_history(db: AsyncSession, current_user: User):
-    stmt = select(
-        Biometric.id,
-        Biometric.weight,
-        Biometric.manual_body_fat,
-        Biometric.calculated_body_fat,
-        Biometric.recorded_at,
-        Biometric.created_at
-    ).where(
+    stmt = select(Biometric).where(
         Biometric.user_id == current_user.id,
-    )
+    ).order_by(Biometric.recorded_at)
+
+    result = await db.execute(stmt)
+    return result.scalars().all()
+
+async def get_biometrics_in_range(db: AsyncSession, user: User, start: datetime, end: datetime):
+    """Biometric entries recorded within [start, end), ordered oldest to newest."""
+    stmt = select(Biometric).where(
+        Biometric.user_id == user.id,
+        Biometric.recorded_at >= start,
+        Biometric.recorded_at < end,
+    ).order_by(Biometric.recorded_at)
 
     result = await db.execute(stmt)
     return result.scalars().all()
 
 async def get_weights_last_month(db: AsyncSession, user: User):
     thirty_days_ago = datetime.now() - timedelta(days=30)
-    stmt = select(Biometric.id, Biometric.weight, Biometric.recorded_at).where(
+    stmt = select(Biometric).where(
         Biometric.user_id == user.id,
         Biometric.recorded_at >= thirty_days_ago
-    )
+    ).order_by(Biometric.recorded_at)
 
     result = await db.execute(stmt)
     return result.scalars().all()

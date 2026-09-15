@@ -83,6 +83,37 @@ async def get_workouts_done(days_ago: int, db: AsyncSession, user: User):
     result = await db.execute(stmt)
     return result.scalars().all()
 
+async def get_workout_logs_in_range(program_id: int, start: datetime, end: datetime, db: AsyncSession, user: User) -> list[WorkoutLog]:
+    stmt = (
+        select(WorkoutLog)
+        .join(ProgramTemplates)
+        .where(
+            ProgramTemplates.user_id == user.id,
+            ProgramTemplates.id == program_id,
+            WorkoutLog.inserted_at >= start,
+            WorkoutLog.inserted_at < end,
+        )
+        .order_by(WorkoutLog.inserted_at)
+    )
+
+    result = await db.execute(stmt)
+    return result.scalars().all()
+
+async def get_all_workout_log_dates(program_id: int, db: AsyncSession, user: User) -> list[datetime]:
+    """All-time workout dates for a program, oldest first. Used to compute streaks."""
+    stmt = (
+        select(WorkoutLog.inserted_at)
+        .join(ProgramTemplates)
+        .where(
+            ProgramTemplates.user_id == user.id,
+            ProgramTemplates.id == program_id,
+        )
+        .order_by(WorkoutLog.inserted_at)
+    )
+
+    result = await db.execute(stmt)
+    return result.scalars().all()
+
 async def get_workout_logs_count(program_id: int, days_ago: int, db: AsyncSession, user: User) -> int | None:
     cutoff = datetime.now(UTC) - timedelta(days=days_ago)
 

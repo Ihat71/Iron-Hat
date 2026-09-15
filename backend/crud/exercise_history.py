@@ -1,9 +1,12 @@
+from datetime import datetime
+
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
 from backend.models.exercise_history import ExerciseHistory
 from backend.models.program_templates import ProgramTemplates
+from backend.models.workout_logs import WorkoutLog
 from backend.models.workout_log_exercises import WorkoutLogExercise
 from backend.schemas.exercise_history import ExerciseHistoryCreate, ExerciseHistorySearch
 from backend.models.user import User
@@ -37,6 +40,36 @@ async def parameter_search_exercise_history(data: ExerciseHistorySearch, db: Asy
 
     result = await db.execute(stmt)
     return result.scalars().all()
+
+async def get_exercise_history_for_program_exercise(
+    db: AsyncSession,
+    user: User,
+    program_id: int,
+    exercise_id: int,
+    start: datetime | None = None,
+    end: datetime | None = None,
+) -> list[ExerciseHistory]:
+    """All exercise history entries for one exercise, logged within one program, oldest first."""
+    stmt = (
+        select(ExerciseHistory)
+        .join(WorkoutLogExercise, ExerciseHistory.workout_log_exercise_id == WorkoutLogExercise.id)
+        .join(WorkoutLog, WorkoutLogExercise.workout_log_id == WorkoutLog.id)
+        .where(
+            ExerciseHistory.user_id == user.id,
+            ExerciseHistory.exercise_id == exercise_id,
+            WorkoutLog.program_id == program_id,
+        )
+        .order_by(ExerciseHistory.created_at)
+    )
+
+    if start is not None:
+        stmt = stmt.where(ExerciseHistory.created_at >= start)
+    if end is not None:
+        stmt = stmt.where(ExerciseHistory.created_at < end)
+
+    result = await db.execute(stmt)
+    return result.scalars().all()
+
 
 async def get_all_exercise_history(offset: int, limit: int, db: AsyncSession, user: User):
     stmt = select(ExerciseHistory).offset(offset).limit(limit)

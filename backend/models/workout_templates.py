@@ -2,6 +2,7 @@ from datetime import datetime
 
 from sqlalchemy import DateTime, String, Integer, func, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.dialects.postgresql import JSONB
 
 from backend.core.database import Base
 from typing import TYPE_CHECKING
@@ -20,8 +21,10 @@ class WorkoutTemplate(Base):
     )
     day_number: Mapped[int | None] = mapped_column(Integer)
     workout_type: Mapped[str] = mapped_column(String(50))
+    # Weekdays this template is scheduled on: 0=Monday .. 6=Sunday. Powers the consistency matrix.
+    days_of_week: Mapped[list[int] | None] = mapped_column(JSONB)
     inserted_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), 
+        DateTime(timezone=True),
         server_default=func.now()
     )
 

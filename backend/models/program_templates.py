@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from backend.models.workout_templates import WorkoutTemplate
     from backend.models.workout_logs import WorkoutLog
     from backend.models.user import User
+    from backend.models.tracked_exercises import TrackedExercise
 
 class ProgramTemplates(Base):
     __tablename__ = "program_templates"
@@ -24,4 +25,5 @@ class ProgramTemplates(Base):
 
     workout_templates: Mapped[list["WorkoutTemplate"]] = relationship(back_populates="program", cascade="all, delete-orphan", passive_deletes=True)
     workout_logs: Mapped[list["WorkoutLog"]] = relationship(back_populates="program", cascade="all, delete-orphan", passive_deletes=True)
+    tracked_exercises: Mapped[list["TrackedExercise"]] = relationship(back_populates="program", cascade="all, delete-orphan", passive_deletes=True)
     user: Mapped["User"] = relationship(back_populates="programs")

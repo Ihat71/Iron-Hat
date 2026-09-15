@@ -39,7 +39,8 @@ async def add_workout_template_service(db: AsyncSession, data: WorkoutTemplateCr
     workout_data = WorkoutTemplate(
         program_id = program_id,
         day_number = data.day_number,
-        workout_type = data.workout_type
+        workout_type = data.workout_type,
+        days_of_week = data.days_of_week
     )
     created_template = await create_workout_template(db, workout_data)
 

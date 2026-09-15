@@ -69,6 +69,20 @@ async def get_workout_template_target_consistency_per_week(program_id: int, db: 
     stmt = select(func.count(WorkoutTemplate.id)).join(ProgramTemplates).where(ProgramTemplates.user_id == current_user.id, WorkoutTemplate.program_id == program_id)
     return await db.scalar(stmt)
 
+async def get_scheduled_weekdays_for_program(program_id: int, db: AsyncSession, current_user: User) -> dict[int, str]:
+    """Maps weekday (0=Monday..6=Sunday) -> workout_type for every scheduled day in this program.
+
+    Templates without days_of_week set are not schedulable and are ignored by the consistency matrix.
+    """
+    templates = await get_user_workout_templates(db, current_user.id, program_id)
+
+    schedule: dict[int, str] = {}
+    for template in templates:
+        for weekday in (template.days_of_week or []):
+            schedule[weekday] = template.workout_type
+
+    return schedule
+
 
 async def update_workout_template(db: AsyncSession, workout_id: int, workout_data: WorkoutTemplateUpdate) -> WorkoutTemplate | None:
     stmt = select(WorkoutTemplate).options(selectinload(WorkoutTemplate.exercises)).where(WorkoutTemplate.id == workout_id)
